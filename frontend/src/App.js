@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 import './App.css'
 import { MapContainer, Login } from './Components'
 import { geolocated } from 'react-geolocated'
-import { Route } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import { provider, auth } from './client';
 import { Redirect } from 'react-router'
+import firebase from 'firebase'
 
 
 
@@ -13,32 +14,44 @@ class App extends Component {
     super()
     this.state = {
       user: null,
-      fireRedirect: false
+      loggedIn: false,
+      loggedOut: false
     }
-    this.login = this.login.bind(this)
-    this.logout = this.logout.bind(this)
   }
-  async login() {
-    const result = await auth().signInWithPopup(provider)
-    this.setState({ user: result.user, fireRedirect: true });
+    login = () => {
+      const result = auth().signInWithPopup(provider)
+      .then((result) => {
+          this.setState({ user: result.user, loggedIn: true });
+
+        })
   }
+
+  logout=()=> {
+    auth().signOut()
+    .then(()=>{
+    this.setState({ user: null, loggedOut: true });
+      })
+  }
+
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(function (user) {
+      console.log(user)
+      if (user) {
+
+      } else console.log('no user is signed in')
+    });
+  }
+
   
-  async logout() {
-    await auth().signOut()
-    this.setState({ user: null });
-  }
-  
-  // async componentWillMount() {
-  //   const user = await auth().onAuthStateChanged();
-  //   if (user) this.setState({ user })
-  // }
+
 
   render() {
-    const { fireRedirect } = this.state
+    const { loggedIn } = this.state
+    const { loggedOut } = this.state
     const { user } = this.state
     const { from } = '/'
     const { coords } = this.props
-    console.log(user)
+    const { reverse } = '/map'
     
     return (
       <div className="App">
@@ -46,16 +59,21 @@ class App extends Component {
           <h1 className="App-title">Welcome to React</h1>
           
         </header>
-        <Route exact path='/' render={(routeProps) => {
-          return <Login user = { user } fireRedirect = { fireRedirect } 
-          login = { this.login } logout = { this.logout }/>
-        }} />
-        <Route path='/map' render={(routeProps) => {
-          return <MapContainer coords = { coords } user = { user }/>
-        }} />
-        {fireRedirect && (
-          <Redirect to={from || '/map'} />
-        )}
+        <Switch>
+          <Route exact path='/' render={(routeProps) => {
+            return <Login user = { user } loggedIn = { loggedIn } 
+            login = { this.login } logout = { this.logout }/>
+          }} />
+          <Route path='/map' render={(routeProps) => {
+            return <MapContainer coords = { coords } user = { user } logout = { this.logout }/>
+          }} />
+        </Switch>
+          {loggedIn && (
+            <Redirect to={from || '/map'} />
+          )}
+          {loggedOut && (
+            <Redirect to={reverse || '/'}/>
+          )}
       </div>
     );
   }

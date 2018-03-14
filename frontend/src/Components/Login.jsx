@@ -8,29 +8,26 @@ class Login extends Component {
     constructor(props){
         super(props)
         this.state = {
-            fireRedirect: this.props.fireRedirect,
+            loggedIn: this.props.loggedIn
+            ,
             user: this.props.user
         }
     }
 render(){
     
-    // const { from } = '/'
     const { user } = this.state
-    const { fireRedirect } = this.state
-    console.log(user)
+    const { loggedIn } = this.state
 
     return(
         <div>
             <h1>Login</h1>
-            <button onClick={this.props.login.bind()}>
+            <button onClick={()=>{this.props.login()}}>
                 Login with Facebook
       </button>
-            <button onClick={this.props.logout.bind(this)}>
+            <button onClick={()=>{this.props.logout()}}>
                 Logout
       </button>
-            {/* {fireRedirect && (
-                <Redirect to={from || '/map'} />
-            )} */}
+           
         </div>
     )
 }
