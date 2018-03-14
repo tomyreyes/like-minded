@@ -10,7 +10,6 @@ class MapContainer extends Component {
    
     componentWillReceiveProps(nextProps) {
         if(this.props.coords !== nextProps.coords){
-            console.log('pls god',nextProps.coords)
             let newCoords = {
                 lat: nextProps.coords.latitude,
                 lng: nextProps.coords.longitude
@@ -21,12 +20,14 @@ class MapContainer extends Component {
         }
     }
     shouldComponentUpdate(nextProps, nextState){
-        return nextState.userCoords !== this.state.userCoords  
+        return nextState.userCoords !== this.state.userCoords || nextProps.user !== null  
     }
     
     render() {  
         const { user } = this.props
-        
+        const { userCoords } = this.state
+        console.log(user)
+
     
         return ( 
             <div>
@@ -35,8 +36,8 @@ class MapContainer extends Component {
                 <Map 
                 google={this.props.google} 
                 center={{
-                    lat: this.state.userCoords.lat,
-                    lng: this.state.userCoords.lng
+                    lat: userCoords.lat,
+                    lng: userCoords.lng
                 }} 
                 zoom={14}/>
                 
