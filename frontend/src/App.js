@@ -6,6 +6,7 @@ import { Route, Switch } from 'react-router-dom'
 import { provider, auth } from './client';
 import { Redirect } from 'react-router'
 import firebase from 'firebase'
+import axios from 'axios'
 
 
 
@@ -22,8 +23,11 @@ class App extends Component {
       const result = auth().signInWithPopup(provider)
       .then((result) => {
           this.setState({ user: result.user, loggedIn: true });
-
+        axios.post('http://localhost:8080/adduser', {
+          email: firebase.auth().currentUser.email
         })
+        })
+
   }
 
   logout=()=> {
@@ -32,18 +36,6 @@ class App extends Component {
     this.setState({ user: null, loggedOut: true });
       })
   }
-
-  componentDidMount() {
-    firebase.auth().onAuthStateChanged(function (user) {
-      console.log(user)
-      if (user) {
-
-      } else console.log('no user is signed in')
-    });
-  }
-
-  
-
 
   render() {
     const { loggedIn } = this.state

@@ -35,16 +35,12 @@ class MapContainer extends Component {
             } else console.log('no user is signed in')
         });
     }
-
-  
-    
     
     render() {  
         const  user  = firebase.auth().currentUser
         console.log(user)
         const { userCoords } = this.state
         
-
         return ( 
             <div>
                 <p>{user ? `Hi, ${user.displayName}!` : 'Hi!'}</p>
