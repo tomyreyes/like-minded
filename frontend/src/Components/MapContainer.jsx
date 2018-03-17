@@ -1,12 +1,22 @@
 import React, { Component } from 'react'
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
-import firebase from 'firebase'
+import { Button, Form, Input, Modal} from 'semantic-ui-react'
+import TimePicker from 'react-time-picker'
+
+
 class MapContainer extends Component {
     constructor(props){
         super(props)
         this.state = {
             userCoords: {lat: 49.2193, lng: -122.5984},
-            user: this.props.user
+            user: this.props.user,
+            userInput: '',
+            title: '',
+            location: '',
+            description:'',
+            time: new Date(),
+            duration: ''
+            
         }
     }
    
@@ -24,28 +34,74 @@ class MapContainer extends Component {
     shouldComponentUpdate(nextProps, nextState){
         return nextState.userCoords !== this.state.userCoords || nextProps.user !== null  
     }
-    componentDidMount() {
-        const logged = firebase.auth().currentUser;
-        this.setState({user: logged})
-        firebase.auth().onAuthStateChanged(function (user) {
-            console.log(user)
-            if (user) {
-                console.log('a current user is signed in')
-                
-            } else console.log('no user is signed in')
-        });
-    }
+
+
     
-    render() {  
-        const  user  = firebase.auth().currentUser
-        console.log(user)
+    
+    titleInput = (e) =>{
+        this.setState({title: e.target.value})
+    }
+    locationInput = (e) =>{
+        this.setState({location: e.target.value})
+    }
+    descriptionInput = (e) =>{
+        this.setState({description: e.target.value})
+        console.log(e.target.value)
+    }
+    onChange = time => this.setState({ time }) 
+
+    durationInput = (e) =>{
+        this.setState({duration: e.target.value})
+    }
+
+    create = () =>{
+        
+    }
+
+
+    render() {
+
+        const styles= {
+            modal: {
+                marginTop: '100px'
+        },
+        clock: {
+            zIndex: 2
+        }  
+    }
         const { userCoords } = this.state
         
         return ( 
             <div>
-                <p>{user ? `Hi, ${user.displayName}!` : 'Hi!'}</p>
-                {user ? <img src={user.photoURL}></img> : ''}
-                <button onClick={()=>{this.props.logout()}}>logout</button>
+                
+                <Input placeholder='Enter Location' onChange={this.handleInput}></Input>
+                
+
+                <Modal style = {styles.modal} trigger={<Button>Create</Button>}>
+                    <Modal.Header textAlign="center">Create an Experience</Modal.Header>
+                    <Modal.Content>
+                        <div>
+                            <Form>
+                            <Form.Input label='Title:' value={this.state.title} onChange={this.titleInput} />
+                            <Modal style = {styles.modal} trigger={<Button>Set Time</Button>}>
+                                <TimePicker
+                                    onChange={this.onChange}
+                                    value={this.state.time}/>
+                           </Modal>
+                            <Form.Input label='Duration' value={this.state.duration} type="number" onChange={this.durationInput} />
+                            <Form.Input label='Location' value={this.state.location} onChange={this.locationInput} />
+                            <Form.TextArea label='Description' value={this.state.description} onChange={this.descriptionInput} />
+                            <Button primary onClick={this.create}>Create</Button>
+                            </Form>
+                            
+                            </div>
+
+
+                    </Modal.Content>
+                </Modal>
+
+
+
             <div>
                 <Map 
                 google={this.props.google} 

@@ -1,34 +1,26 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router'
-import firebase from 'firebase'
-import { provider, auth } from '../client';
-
+import { Button, Container, Icon } from 'semantic-ui-react'
 
 class Login extends Component {
     constructor(props){
         super(props)
         this.state = {
-            loggedIn: this.props.loggedIn
-            ,
+            loggedIn: this.props.loggedIn,
             user: this.props.user
         }
     }
 render(){
     
-    const { user } = this.state
-    const { loggedIn } = this.state
+
 
     return(
-        <div>
+        <Container textAlign="center">
             <h1>Login</h1>
-            <button onClick={()=>{this.props.login()}}>
-                Login with Facebook
-      </button>
-            <button onClick={()=>{this.props.logout()}}>
-                Logout
-      </button>
-           
-        </div>
+            <div><Button primary onClick={()=>{ this.props.login() }}>
+                Login with <Icon name="facebook f" size="large" />
+      </Button></div>
+            <div><Button onClick={()=>{ this.props.googleLogin() }}>Login with <Icon color="red" name="google plus" size="large"/></Button></div>
+        </Container>
     )
 }
 }
