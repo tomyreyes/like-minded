@@ -11,8 +11,6 @@ class Login extends Component {
     }
 render(){
     
-
-
     return(
         <Container textAlign="center">
             <h1>Login</h1>

@@ -24,9 +24,9 @@ class App extends Component {
       const result = auth().signInWithPopup(facebook)
       .then((result) => {
           this.setState({ user: result.user, loggedIn: true, loggedOut: false });
-        axios.post('http://localhost:8080/adduser', {
-          email: firebase.auth().currentUser.email
-        })
+        // axios.post('http://localhost:8080/adduser', {
+        //   email: firebase.auth().currentUser.email
+        // })
         })
   }
 
@@ -34,6 +34,9 @@ class App extends Component {
     const result = auth().signInWithPopup(gmail)
     .then((result)=>{
       this.setState({user: result.user, loggedIn: true, loggedOut: false})
+      axios.post('http://localhost:8080/adduser', {
+        email: firebase.auth().currentUser.email
+      })
     })
   }
 

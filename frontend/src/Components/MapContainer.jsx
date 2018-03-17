@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import { Button, Form, Input, Modal} from 'semantic-ui-react'
 import TimePicker from 'react-time-picker'
-
+import axios from 'axios'
+import firebase from 'firebase'
 
 class MapContainer extends Component {
     constructor(props){
@@ -13,9 +14,10 @@ class MapContainer extends Component {
             userInput: '',
             title: '',
             location: '',
-            description:'',
+            details:'',
             time: new Date(),
-            duration: ''
+            duration: '',
+            // email: ''
             
         }
     }
@@ -44,7 +46,7 @@ class MapContainer extends Component {
     locationInput = (e) =>{
         this.setState({location: e.target.value})
     }
-    descriptionInput = (e) =>{
+    detailsInput = (e) =>{
         this.setState({description: e.target.value})
         console.log(e.target.value)
     }
@@ -54,12 +56,40 @@ class MapContainer extends Component {
         this.setState({duration: e.target.value})
     }
 
-    create = () =>{
-        
+    create = (location) =>{
+        let currentEmail = firebase.auth().currentUser.email
+        console.log(currentEmail)
+        axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.userCoords.lat},${this.state.userCoords.lng}&radius=50000&keyword=${location}&key=AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw`)
+        .then((res) => {
+            
+            let coords = res.data.results[0].geometry.location
+            this.setState(
+                { title: this.state.title, 
+                  time: this.state.time,
+                  duration: this.state.duration, 
+                  details: this.state.details,
+                  location: coords
+                   }
+                )
+                  
+
+            axios.post('http://localhost:8080/addexperience',{
+
+                title: this.state.title,
+                time: this.state.time,
+                duration: this.state.duration,
+                details: this.state.details,
+                location: this.state.location,
+                email: currentEmail
+            })
+            .then
+        })
+
     }
 
 
     render() {
+        
 
         const styles= {
             modal: {
@@ -78,7 +108,7 @@ class MapContainer extends Component {
                 
 
                 <Modal style = {styles.modal} trigger={<Button>Create</Button>}>
-                    <Modal.Header textAlign="center">Create an Experience</Modal.Header>
+                    <Modal.Header >Create an Experience</Modal.Header>
                     <Modal.Content>
                         <div>
                             <Form>
@@ -90,7 +120,7 @@ class MapContainer extends Component {
                            </Modal>
                             <Form.Input label='Duration' value={this.state.duration} type="number" onChange={this.durationInput} />
                             <Form.Input label='Location' value={this.state.location} onChange={this.locationInput} />
-                            <Form.TextArea label='Description' value={this.state.description} onChange={this.descriptionInput} />
+                            <Form.TextArea label='Description' value={this.state.description} onChange={this.detailsInput} />
                             <Button primary onClick={this.create}>Create</Button>
                             </Form>
                             
