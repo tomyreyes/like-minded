@@ -17,12 +17,18 @@ class MapContainer extends Component {
             details:'',
             time: new Date(),
             duration: '',
-            // email: ''
-            
+            markerCoordinates: ''
         }
     }
+
+    componentDidMount() {
+        axios.get('http://localhost:8080/getcoordinates')
+            .then((res) => {
+                this.setState({ markerCoordinates: res.data })
+            })
+    }
    
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps) { 
         if(this.props.coords !== nextProps.coords){
             let newCoords = {
                 lat: nextProps.coords.latitude,
@@ -33,13 +39,15 @@ class MapContainer extends Component {
             this.setState({userCoords: {lat: 49.2193, lng: -122.5984}})
         }
     }
+
     shouldComponentUpdate(nextProps, nextState){
-        return nextState.userCoords !== this.state.userCoords || nextProps.user !== null  
+        return nextState.userCoords !== this.state.userCoords || nextProps.user !== null || nextState.coords !== this.state.coords
     }
 
 
-    
-    
+
+
+
     titleInput = (e) =>{
         this.setState({title: e.target.value})
     }
@@ -48,7 +56,6 @@ class MapContainer extends Component {
     }
     detailsInput = (e) =>{
         this.setState({description: e.target.value})
-        console.log(e.target.value)
     }
     onChange = time => this.setState({ time }) 
 
@@ -56,10 +63,9 @@ class MapContainer extends Component {
         this.setState({duration: e.target.value})
     }
 
-    create = (location) =>{
+    create = () =>{
         let currentEmail = firebase.auth().currentUser.email
-        console.log(currentEmail)
-        axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.userCoords.lat},${this.state.userCoords.lng}&radius=50000&keyword=${location}&key=AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw`)
+        axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.userCoords.lat},${this.state.userCoords.lng}&radius=50000&keyword=${this.state.location}&key=AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw`)
         .then((res) => {
             
             let coords = res.data.results[0].geometry.location
@@ -68,11 +74,10 @@ class MapContainer extends Component {
                   time: this.state.time,
                   duration: this.state.duration, 
                   details: this.state.details,
-                  location: coords
+                  location: coords,
+                  markerCoordinates: this.state.markerCoordinates.concat(coords)
                    }
                 )
-                  
-
             axios.post('http://localhost:8080/addexperience',{
 
                 title: this.state.title,
@@ -82,19 +87,21 @@ class MapContainer extends Component {
                 location: this.state.location,
                 email: currentEmail
             })
-            .then
         })
 
     }
 
-
     render() {
-        
-
-        const styles= {
-            modal: {
-                marginTop: '100px'
-        },
+    let Markers 
+      if (this.state.markerCoordinates !== '') {
+        Markers = this.state.markerCoordinates.map((coord, i)=>{
+            return (<Marker key={i} position={coord}/>)
+        }) 
+    }       
+    const styles= {
+        modal: {
+            marginTop: '100px'
+         },
         clock: {
             zIndex: 2
         }  
@@ -103,7 +110,6 @@ class MapContainer extends Component {
         
         return ( 
             <div>
-                
                 <Input placeholder='Enter Location' onChange={this.handleInput}></Input>
                 
 
@@ -129,19 +135,29 @@ class MapContainer extends Component {
 
                     </Modal.Content>
                 </Modal>
+                {!(this.state.markerCoordinates === '') ? <div>
+                    <Map
+                        google={this.props.google}
+                        center={{
+                            lat: userCoords.lat,
+                            lng: userCoords.lng
+                        }}
+                        zoom={14}>
+                        { Markers }
 
-
-
-            <div>
-                <Map 
-                google={this.props.google} 
-                center={{
-                    lat: userCoords.lat,
-                    lng: userCoords.lng
-                }} 
-                zoom={14}/>
-                
+                    </Map>
                 </div>
+                    : <div>
+                        <Map
+                            google={this.props.google}
+                            center={{
+                                lat: userCoords.lat,
+                                lng: userCoords.lng
+                            }}
+                            zoom={14}>
+
+                        </Map>
+                    </div> }
                 </div>
         )
     }

@@ -26,21 +26,10 @@ const knex = require('knex')({
 
 const bookshelf = require('bookshelf')(knex)
 
-app.post('/adduser', (req, res)=>{
-    let newUser = new User({
-        email: req.body.email
-    })
-    newUser.save()
-        .then(user =>{
-            console.log(user)
-        })
-    res.json({ success: true })
-})
-
 app.get('/getuser' , (req, res) =>{
     User.fetchAll()
     .then(user => {
-        console.log(user.models.map(user => user.attributes))
+        console.log(user.models.map(user => user.attributes.email))
     })
 })
 
@@ -50,6 +39,37 @@ app.get('/getid', (req, res)=> {
     .then(user => {
         console.log(user.attributes.id)
     })
+})
+
+app.post('/adduser', (req, res) => {
+    let currentEmail = req.body.email
+    let arrayEmail
+    User.fetchAll()
+        .then(user => {
+            arrayEmail = user.models.map(user => user.attributes.email)
+            for (let i = 0; i < arrayEmail.length - 1; i++) {
+                if (arrayEmail[i] !== currentEmail) {
+
+                    let newUser = new User({
+                        email: req.body.email
+                    })
+                    newUser.save()
+                        .then(user => {
+                            console.log(user)
+                        })
+                }
+                else console.log('there is a user with the same email')
+            }
+        })
+    res.json({ success: true })
+})
+
+app.get('/getcoordinates', (req, res)=>{
+   Experience.fetchAll()
+        .then(experience => {
+            let coords = (experience.models.map(exp => JSON.parse(exp.attributes.location)))
+            res.send(coords)
+        })
 })
 
 app.post('/addexperience', (req, res)=> {
