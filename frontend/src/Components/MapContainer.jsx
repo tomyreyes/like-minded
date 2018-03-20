@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
-import { Button, Form, Input, Modal} from 'semantic-ui-react'
+import { Button, Form, Header, Input, Modal} from 'semantic-ui-react'
 import TimePicker from 'react-time-picker'
 import axios from 'axios'
 import firebase from 'firebase'
@@ -17,7 +17,11 @@ class MapContainer extends Component {
             details:'',
             time: new Date(),
             duration: '',
-            markerCoordinates: ''
+            markerCoordinates: '',
+            coords: this.props.coords,
+            experiences: '', 
+            experience: '',
+            display: false
         }
     }
 
@@ -26,9 +30,14 @@ class MapContainer extends Component {
             .then((res) => {
                 this.setState({ markerCoordinates: res.data })
             })
+        axios.get('http://localhost:8080/getexperiences')
+            .then((res)=>{
+                this.setState({experiences: res.data})
+            })
     }
    
-    componentWillReceiveProps(nextProps) { 
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps) 
         if(this.props.coords !== nextProps.coords){
             let newCoords = {
                 lat: nextProps.coords.latitude,
@@ -41,13 +50,21 @@ class MapContainer extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        return nextState.userCoords !== this.state.userCoords || nextProps.user !== null || nextState.coords !== this.state.coords
+        console.log(nextState.markerCoordinates)
+        return nextState.userCoords !== this.state.userCoords || nextProps.user !== null || nextState.markerCoordinates!== this.state.markerCoordinates
+    }
+
+    componentDidUpdate(previousProps, previousState){
+        if (previousState.userCoords !== this.state.userCoords){
+            this.setState({userCoords: this.state.userCoords})
+        }
+
     }
 
 
 
 
-
+    //Code for the experience creation modal 
     titleInput = (e) =>{
         this.setState({title: e.target.value})
     }
@@ -55,14 +72,13 @@ class MapContainer extends Component {
         this.setState({location: e.target.value})
     }
     detailsInput = (e) =>{
-        this.setState({description: e.target.value})
+        this.setState({details: e.target.value})
     }
     onChange = time => this.setState({ time }) 
 
     durationInput = (e) =>{
         this.setState({duration: e.target.value})
     }
-
     create = () =>{
         let currentEmail = firebase.auth().currentUser.email
         axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.userCoords.lat},${this.state.userCoords.lng}&radius=50000&keyword=${this.state.location}&key=AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw`)
@@ -75,7 +91,9 @@ class MapContainer extends Component {
                   duration: this.state.duration, 
                   details: this.state.details,
                   location: coords,
-                  markerCoordinates: this.state.markerCoordinates.concat(coords)
+                  markerCoordinates: this.state.markerCoordinates.concat(coords),
+                  experiences: this.state.experiences.concat(coords)
+                  
                    }
                 )
             axios.post('http://localhost:8080/addexperience',{
@@ -91,11 +109,24 @@ class MapContainer extends Component {
 
     }
 
+    // when marker is clicked 
+    showExperience = (exp) => {
+        let filter = this.state.experiences.filter((experience)=> (experience.location === JSON.stringify(exp.position)) ? experience: '')
+        this.setState({experience: filter, display: true})
+    }
+
+    close = () =>{
+        this.setState({display:false})
+    }
+
+
     render() {
-    let Markers 
+        
+        
+    let Markers = []
       if (this.state.markerCoordinates !== '') {
         Markers = this.state.markerCoordinates.map((coord, i)=>{
-            return (<Marker key={i} position={coord}/>)
+            return (<Marker key={i} position={coord} onClick={this.showExperience}/>)
         }) 
     }       
     const styles= {
@@ -104,7 +135,18 @@ class MapContainer extends Component {
          },
         clock: {
             zIndex: 2
-        }  
+        },
+        modal2: {
+            marginTop:'100px',
+            padding: '10px'
+        },
+        closeButton: {
+            textAlign: 'right'
+        },
+        header:{
+            textAlign: 'center'
+
+        }
     }
         const { userCoords } = this.state
         
@@ -135,6 +177,8 @@ class MapContainer extends Component {
 
                     </Modal.Content>
                 </Modal>
+                
+            
                 {!(this.state.markerCoordinates === '') ? <div>
                     <Map
                         google={this.props.google}
@@ -158,12 +202,35 @@ class MapContainer extends Component {
 
                         </Map>
                     </div> }
+                {!(this.state.experience === '') ? 
+                <Modal style={styles.modal2} open={this.state.display} closeOnDimmerClick>
+                        {/* <Modal.Actions style={styles.modalaction}> */}
+                        <div style={styles.closeButton}>
+                        <Button  onClick={this.close}>Close</Button> 
+                        </div>
+                        {/* </Modal.Actions> */}
+
+                    <Modal.Header style={styles.header}>{this.state.experience[0].title}</Modal.Header>
+                    <Modal.Content>
+                        <Modal.Description>
+                            <Header>Time</Header>
+                            <p>{this.state.experience[0].time}</p>    
+                            <Header>Details</Header>
+                            <p>{this.state.experience[0].details}</p>
+
+                        </Modal.Description>
+                    </Modal.Content>
+                    
+                </Modal>
+                 : ''}
+                        
+               
                 </div>
         )
     }
 }
 
 export default GoogleApiWrapper({
-    apiKey: 'AIzaSyDaGmvK3oulGREetWMIgTpz0RO9U6Ctg_U'
+    apiKey: 'AIzaSyA9pQUy3AG6PM-Gi-Jyz9MUiFgFl-UQ3SA'
 })(MapContainer)
 

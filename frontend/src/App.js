@@ -56,6 +56,7 @@ class App extends Component {
     const { from } = '/'
     const { coords } = this.props
     const { reverse } = '/map'
+    console.log(coords)
     
     return (
       <div>

@@ -72,6 +72,14 @@ app.get('/getcoordinates', (req, res)=>{
         })
 })
 
+app.get('/getexperiences', (req, res)=> {
+    Experience.fetchAll()
+    .then(experiences => {
+        let experiencesArray = (experiences.models.map(exp => exp.attributes))
+        res.send(experiencesArray)
+    })
+})
+
 app.post('/addexperience', (req, res)=> {
     let currentEmail = req.body.email
     let id 
