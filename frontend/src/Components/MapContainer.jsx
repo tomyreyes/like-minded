@@ -21,7 +21,8 @@ class MapContainer extends Component {
             coords: this.props.coords,
             experiences: '', 
             experience: '',
-            display: false
+            display: false,
+            placeName: ''
         }
     }
 
@@ -37,7 +38,6 @@ class MapContainer extends Component {
     }
    
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps) 
         if(this.props.coords !== nextProps.coords){
             let newCoords = {
                 lat: nextProps.coords.latitude,
@@ -50,15 +50,15 @@ class MapContainer extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        console.log(nextState.markerCoordinates)
         return nextState.userCoords !== this.state.userCoords || nextProps.user !== null || nextState.markerCoordinates!== this.state.markerCoordinates
     }
-
     componentDidUpdate(previousProps, previousState){
         if (previousState.userCoords !== this.state.userCoords){
             this.setState({userCoords: this.state.userCoords})
         }
-
+        if (previousState.location !== this.state.location) {
+            this.setState({experiences: this.state.experiences})
+        }
     }
 
 
@@ -90,10 +90,18 @@ class MapContainer extends Component {
                   time: this.state.time,
                   duration: this.state.duration, 
                   details: this.state.details,
+                  placeName: this.state.location,
                   location: coords,
-                  markerCoordinates: this.state.markerCoordinates.concat(coords),
-                  experiences: this.state.experiences.concat(coords)
-                  
+                  markerCoordinates: this.state.markerCoordinates.concat(coords)
+                   },()=>{
+                       let newExpObj = {
+                           title: this.state.title,
+                           time: JSON.stringify(this.state.time),
+                           duration: this.state.duration,
+                           details: this.state.details,
+                           location: JSON.stringify(this.state.location)
+                       }
+                       this.setState({experiences: this.state.experiences.concat(newExpObj)})
                    }
                 )
             axios.post('http://localhost:8080/addexperience',{
@@ -120,9 +128,9 @@ class MapContainer extends Component {
     }
 
 
-    render() {
-        
-        
+    render() {    
+        console.log(this.state.experiences)
+        console.log(this.state.experience)
     let Markers = []
       if (this.state.markerCoordinates !== '') {
         Markers = this.state.markerCoordinates.map((coord, i)=>{
@@ -204,12 +212,9 @@ class MapContainer extends Component {
                     </div> }
                 {!(this.state.experience === '') ? 
                 <Modal style={styles.modal2} open={this.state.display} closeOnDimmerClick>
-                        {/* <Modal.Actions style={styles.modalaction}> */}
                         <div style={styles.closeButton}>
                         <Button  onClick={this.close}>Close</Button> 
                         </div>
-                        {/* </Modal.Actions> */}
-
                     <Modal.Header style={styles.header}>{this.state.experience[0].title}</Modal.Header>
                     <Modal.Content>
                         <Modal.Description>
@@ -217,14 +222,11 @@ class MapContainer extends Component {
                             <p>{this.state.experience[0].time}</p>    
                             <Header>Details</Header>
                             <p>{this.state.experience[0].details}</p>
-
                         </Modal.Description>
                     </Modal.Content>
                     
                 </Modal>
                  : ''}
-                        
-               
                 </div>
         )
     }

@@ -80,6 +80,8 @@ app.get('/getexperiences', (req, res)=> {
     })
 })
 
+//app.get user who owns the experience? 
+
 app.post('/addexperience', (req, res)=> {
     let currentEmail = req.body.email
     let id 
