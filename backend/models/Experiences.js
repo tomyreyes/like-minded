@@ -16,6 +16,7 @@ const Experiences = bookshelf.Model.extend({
     user: function () {
         return this.belongsTo(Users)
     }
+    
 })
 
 module.exports = Experiences

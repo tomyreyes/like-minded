@@ -177,15 +177,22 @@ class MapContainer extends Component {
            .then((res)=>{
                
                let userArr = res.data 
-            //    let filter = listExperiences.filter((experience) => (experience.id === this.state.experience[0].id) ? experience : '')
-            //    let filterUserId = userArr.filter((user)=> (user.id === filter[0].User_id) ? user : '')
-            // //    let filter = listExperiences.filter((experience) => (experience.id === this.state.experience[0].id) ? experience : '')
-            // //    console.log(filter[0].User_id)
-            // // console.log(filterUserId)
-            //    if (filterUserId[0].email !== currentEmail){
-            //         console.log('hi')
-            //     } else console.log('farts')
+               let filter = listExperiences.filter((experience) => (experience.id === this.state.experience[0].id) ? experience : '')
+
+               let filterUserId = userArr.filter((user)=> (user.id === filter[0].User_id) ? user : '')
+               console.log(filter[0].participants)
+               console.log(filterUserId[0])
+               console.log(currentEmail)
+               if (filterUserId[0].email !== currentEmail){
+                //    console.log(filter[0].participants.concat(', ' + currentUser))
+                   this.setState({participants: filter[0].participants.concat(', '+ currentUser)})
+                   axios.put('http://localhost:8080/updateparticipants', {
+                    participants: this.state.participants,
+                    id: this.state.experience[0].id
+                    }) 
+                } else console.log('error')
            })
+           
         //    this.setState(
         //        {
         //            participants: filter[0].participants
@@ -203,8 +210,6 @@ class MapContainer extends Component {
 
 
     render() { 
-        // console.log(this.state.experiences)
-      
     let Markers = []
       if (this.state.markerCoordinates !== '') {
         Markers = this.state.markerCoordinates.map((coord, i)=>{
