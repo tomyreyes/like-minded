@@ -41,28 +41,48 @@ app.get('/getid', (req, res)=> {
     })
 })
 
-app.post('/adduser', (req, res) => {
-    let currentEmail = req.body.email
-    let arrayEmail
-    User.fetchAll()
-        .then(user => {
-            arrayEmail = user.models.map(user => user.attributes.email)
-            for (let i = 0; i < arrayEmail.length - 1; i++) {
-                if (arrayEmail[i] !== currentEmail) {
+// app.post('/adduser', (req, res) => {
+//     let currentEmail = req.body.email
+//     let arrayEmail
+//     let newUser = new User({
+//         email: req.body.email,
+//         displayName: req.body.displayName
+//     })
+//     User.fetchAll()
+//         .then(user => {
+//         let dbEmails = user.modelsmap(user => user.attributes.email)
+//             for (let i = 0; i < arrayEmail.length - 1; i++) {
+//                 if (arrayEmail[i]!== currentEmail) {
+//                     new User.save()
+//                         .then(user => {
+//                             console.log(user)
+//                                             })}
+//                  else console.log('same user info')
+//             } 
+//             res.json({ success: true })
+// })
 
-                    let newUser = new User({
-                        email: req.body.email
-                    })
-                    newUser.save()
-                        .then(user => {
-                            console.log(user)
-                        })
-                }
-                else console.log('there is a user with the same email')
-            }
-        })
-    res.json({ success: true })
+app.post('/adduser', (req, res)=>{
+    let receivedEmail = req.body.email
+    let arrayEmail
+    let newUser = new User ({
+        email: req.body.email,
+        displayName: req.body.displayName
+    })
+    // User.fetchAll()
+    //     .then(user => {
+    //         arrayEmail = user.models.map(user => user.attributes.email)
+    //             for(let i = 0; i < arrayEmail.length - 1; i++) {
+    //                 if (arrayEmail[i] !== receivedEmail) {
+                        newUser.save()
+                            .then(user => {
+                                console.log(user)
+                            })
+        //             }else console.log('this exists')
+        //         } res.json({success:true})
+        // })
 })
+    
 
 app.get('/getcoordinates', (req, res)=>{
    Experience.fetchAll()
@@ -82,25 +102,26 @@ app.get('/getexperiences', (req, res)=> {
 
 //app.get user who owns the experience? 
 
-app.post('/addexperience', (req, res)=> {
+app.post('/addexperience', (req, res) => {
+
     let currentEmail = req.body.email
-    let id 
-    User.where({email: currentEmail})
-    .fetch()
-    .then(user => {
-         id = user.attributes.id
+    let id
+    User.where({ email: currentEmail })
+        .fetch()
+        .then(user => {
+            id = user.attributes.id
 
             let newExperience = new Experience({
                 title: req.body.title,
                 time: req.body.time,
                 duration: req.body.duration,
-                
-                location: req.body.location, //probs wont need to parse this when real data comes in 
+                location: req.body.location, 
                 details: req.body.details,
-                User_id: id
-                // req.body.User_id //req.body.email find ID
-                //
-                //knex syntax to find user determine id from email? axios.post email and use this received email to be searched via bookshelf 
+                User_id: id,
+                placeName: req.body.placeName,
+                max: req.body.max,
+                participants: req.body.participants
+                
             })
             newExperience.save()
                 .then(experience => {
@@ -108,7 +129,7 @@ app.post('/addexperience', (req, res)=> {
                 })
             res.json({ success: true })
         })
-    })
+})
     
 
 

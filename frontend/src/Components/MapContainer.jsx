@@ -22,7 +22,9 @@ class MapContainer extends Component {
             experiences: '', 
             experience: '',
             display: false,
-            placeName: ''
+            placeName: '',
+            max: '',
+            currentUser:''
         }
     }
 
@@ -43,7 +45,7 @@ class MapContainer extends Component {
                 lat: nextProps.coords.latitude,
                 lng: nextProps.coords.longitude
             }
-            this.setState({userCoords: newCoords})
+            this.setState({userCoords: newCoords, currentUser: firebase.auth().currentUser.displayName})
         } else {
             this.setState({userCoords: {lat: 49.2193, lng: -122.5984}})
         }
@@ -79,27 +81,36 @@ class MapContainer extends Component {
     durationInput = (e) =>{
         this.setState({duration: e.target.value})
     }
+    maxInput = (e) =>{
+        this.setState({max: e.target.value})
+    }
     create = () =>{
         let currentEmail = firebase.auth().currentUser.email
+        let currentUser = firebase.auth().currentUser.displayName
+        this.setState({placeName: this.state.location, currentUser: currentUser})
         axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.userCoords.lat},${this.state.userCoords.lng}&radius=50000&keyword=${this.state.location}&key=AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw`)
         .then((res) => {
-            
             let coords = res.data.results[0].geometry.location
             this.setState(
                 { title: this.state.title, 
                   time: this.state.time,
                   duration: this.state.duration, 
                   details: this.state.details,
-                  placeName: this.state.location,
+                  placeName: this.state.placeName,
                   location: coords,
-                  markerCoordinates: this.state.markerCoordinates.concat(coords)
+                  markerCoordinates: this.state.markerCoordinates.concat(coords),
+                  participants: this.state.currentUser
                    },()=>{
+                       console.log(this.state.participants)
                        let newExpObj = {
                            title: this.state.title,
                            time: JSON.stringify(this.state.time),
                            duration: this.state.duration,
                            details: this.state.details,
-                           location: JSON.stringify(this.state.location)
+                           location: JSON.stringify(this.state.location),
+                           placeName: this.state.placeName,
+                           max: this.state.max,
+                           participants: this.state.currentUser
                        }
                        this.setState({experiences: this.state.experiences.concat(newExpObj)})
                    }
@@ -111,13 +122,16 @@ class MapContainer extends Component {
                 duration: this.state.duration,
                 details: this.state.details,
                 location: this.state.location,
-                email: currentEmail
+                email: currentEmail,
+                max: this.state.max, 
+                placeName: this.state.placeName,
+                participants: this.state.currentUser
             })
         })
 
     }
 
-    // when marker is clicked 
+    // Experience Modal
     showExperience = (exp) => {
         let filter = this.state.experiences.filter((experience)=> (experience.location === JSON.stringify(exp.position)) ? experience: '')
         this.setState({experience: filter, display: true})
@@ -127,10 +141,26 @@ class MapContainer extends Component {
         this.setState({display:false})
     }
 
+    join = () => {
+        axios.get('http://localhost:8080/getexperiences')
+            .then((res)=>{
+                this.setState({experiences: res.data})
+            }), ()=>{
+                let filter = this.state.experiences.filter((experience)=> (experience))
+            }
+            
+        // this.setState(
+        //     {
+        //         participants:
+        //         // participants: this.state.experiences[0].participants.concat('hi')
+        //     }
+        // )
+    }
 
-    render() {    
-        console.log(this.state.experiences)
-        console.log(this.state.experience)
+
+
+    render() { 
+        console.log(this.state.participants)   
     let Markers = []
       if (this.state.markerCoordinates !== '') {
         Markers = this.state.markerCoordinates.map((coord, i)=>{
@@ -176,6 +206,7 @@ class MapContainer extends Component {
                            </Modal>
                             <Form.Input label='Duration' value={this.state.duration} type="number" onChange={this.durationInput} />
                             <Form.Input label='Location' value={this.state.location} onChange={this.locationInput} />
+                            <Form.Input label='Max participants' value={this.state.max} onChange={this.maxInput} />
                             <Form.TextArea label='Description' value={this.state.description} onChange={this.detailsInput} />
                             <Button primary onClick={this.create}>Create</Button>
                             </Form>
@@ -222,9 +253,13 @@ class MapContainer extends Component {
                             <p>{this.state.experience[0].time}</p>    
                             <Header>Details</Header>
                             <p>{this.state.experience[0].details}</p>
+                            <Header>Max Participants</Header>
+                            <p>{this.state.experience[0].max}</p>
+                            <Header>People Attending</Header>
+                            <p>{this.state.experience[0].participants}</p>
                         </Modal.Description>
                     </Modal.Content>
-                    
+                    <Button onClick={this.join}>Join</Button>
                 </Modal>
                  : ''}
                 </div>

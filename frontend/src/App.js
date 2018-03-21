@@ -35,7 +35,8 @@ class App extends Component {
     .then((result)=>{
       this.setState({user: result.user, loggedIn: true, loggedOut: false})
       axios.post('http://localhost:8080/adduser', {
-        email: firebase.auth().currentUser.email
+        email: firebase.auth().currentUser.email,
+        displayName: firebase.auth().currentUser.displayName
       })
     })
   }
