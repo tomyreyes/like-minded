@@ -29,17 +29,18 @@ const bookshelf = require('bookshelf')(knex)
 app.get('/getuser' , (req, res) =>{
     User.fetchAll()
     .then(user => {
-        console.log(user.models.map(user => user.attributes.email))
+        let userArr = (user.models.map(user => user.attributes))
+        res.send(userArr)
     })
 })
 
-app.get('/getid', (req, res)=> {
-    User.where({email:'tomysteeze@gmail.com'})
-    .fetch()
-    .then(user => {
-        console.log(user.attributes.id)
-    })
-})
+// app.get('/getid', (req, res)=> {
+//     User.where({email:'tomysteeze@gmail.com'})
+//     .fetch()
+//     .then(user => {
+//         console.log(user.attributes.id)
+//     })
+// })
 
 // app.post('/adduser', (req, res) => {
 //     let currentEmail = req.body.email
@@ -130,6 +131,15 @@ app.post('/addexperience', (req, res) => {
             res.json({ success: true })
         })
 })
+
+app.put('/updateparticipants', (req, res)=>{
+    let currentId = req.body.id
+    let newParticipants = req.body.participants
+    new Experience({id: currentId})
+    .save({participants: newParticipants}, {patch: true})
+    res.json({success:true})
+})
+
     
 
 

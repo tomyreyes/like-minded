@@ -24,7 +24,9 @@ class MapContainer extends Component {
             display: false,
             placeName: '',
             max: '',
-            currentUser:''
+            currentUser:'',
+            isJoined: false,
+            isDisabled: false
         }
     }
 
@@ -45,9 +47,17 @@ class MapContainer extends Component {
                 lat: nextProps.coords.latitude,
                 lng: nextProps.coords.longitude
             }
-            this.setState({userCoords: newCoords, currentUser: firebase.auth().currentUser.displayName})
+            this.setState(
+                {
+                    userCoords: newCoords
+                }
+            )
         } else {
-            this.setState({userCoords: {lat: 49.2193, lng: -122.5984}})
+            this.setState(
+                {
+                    userCoords: {lat: 49.2193, lng: -122.5984}
+                }
+            )
         }
     }
 
@@ -101,7 +111,6 @@ class MapContainer extends Component {
                   markerCoordinates: this.state.markerCoordinates.concat(coords),
                   participants: this.state.currentUser
                    },()=>{
-                       console.log(this.state.participants)
                        let newExpObj = {
                            title: this.state.title,
                            time: JSON.stringify(this.state.time),
@@ -133,8 +142,18 @@ class MapContainer extends Component {
 
     // Experience Modal
     showExperience = (exp) => {
+        let currentUser = firebase.auth().currentUser.displayName
+        axios.get('http://localhost:8080/getexperiences')
+        .then((res)=>{
+            this.setState({experiences: res.data})
+        })
         let filter = this.state.experiences.filter((experience)=> (experience.location === JSON.stringify(exp.position)) ? experience: '')
         this.setState({experience: filter, display: true})
+
+        if (this.state.experience[0].participants === currentUser) {
+            this.setState({ isDisabled: true })
+        }
+        
     }
 
     close = () =>{
@@ -142,25 +161,46 @@ class MapContainer extends Component {
     }
 
     join = () => {
+        let currentUser = firebase.auth().currentUser.displayName
+        let currentEmail = firebase.auth().currentUser.email
+        this.setState({isJoined: true})
         axios.get('http://localhost:8080/getexperiences')
-            .then((res)=>{
-                this.setState({experiences: res.data})
-            }), ()=>{
-                let filter = this.state.experiences.filter((experience)=> (experience))
-            }
-            
-        // this.setState(
-        //     {
-        //         participants:
-        //         // participants: this.state.experiences[0].participants.concat('hi')
-        //     }
-        // )
+       .then((res)=>{
+           let listExperiences = res.data
+           let filter = listExperiences.filter((experience)=> (experience.id === this.state.experience[0].id) ? experience : '')
+        //    this.setState({experience: filter}) this is out of the question 
+           axios.get('http://localhost:8080/getuser')
+           .then((res)=>{
+               
+               let userArr = res.data 
+            //    let filter = listExperiences.filter((experience) => (experience.id === this.state.experience[0].id) ? experience : '')
+            //    let filterUserId = userArr.filter((user)=> (user.id === filter[0].User_id) ? user : '')
+            // //    let filter = listExperiences.filter((experience) => (experience.id === this.state.experience[0].id) ? experience : '')
+            // //    console.log(filter[0].User_id)
+            // // console.log(filterUserId)
+            //    if (filterUserId[0].email !== currentEmail){
+            //         console.log('hi')
+            //     } else console.log('farts')
+           })
+        //    this.setState(
+        //        {
+        //            participants: filter[0].participants
+        //         },()=>{
+        //             this.setState({participants: this.state.participants.concat(', '+ currentUser)})
+                    
+        //         }
+        //     )
+        //    axios.put('http://localhost:8080/updateparticipants', {
+        //        participants: this.state.participants,
+        //        id: this.state.experience[0].id
+        //    }) 
+       }) 
     }
 
 
-
     render() { 
-        console.log(this.state.participants)   
+        console.log(this.state.experiences)
+      
     let Markers = []
       if (this.state.markerCoordinates !== '') {
         Markers = this.state.markerCoordinates.map((coord, i)=>{
@@ -259,7 +299,7 @@ class MapContainer extends Component {
                             <p>{this.state.experience[0].participants}</p>
                         </Modal.Description>
                     </Modal.Content>
-                    <Button onClick={this.join}>Join</Button>
+                    <Button onClick={this.join} disabled={this.state.isDisabled}>{(this.state.isJoined) ? 'Leave' : 'Join'}</Button>
                 </Modal>
                  : ''}
                 </div>
