@@ -145,14 +145,18 @@ class MapContainer extends Component {
         let currentUser = firebase.auth().currentUser.displayName
         axios.get('http://localhost:8080/getexperiences')
         .then((res)=>{
-            this.setState({experiences: res.data})
-        })
-        let filter = this.state.experiences.filter((experience)=> (experience.location === JSON.stringify(exp.position)) ? experience: '')
-        this.setState({experience: filter, display: true})
+            let filter = res.data.filter((experience) => (experience.location === JSON.stringify(exp.position)) ? experience : '')
+            this.setState({experience: filter, display: true})
+            let clickedCoords = (JSON.parse(filter[0].location))
 
-        if (this.state.experience[0].participants === currentUser) {
-            this.setState({ isDisabled: true })
-        }
+            if (filter[0].participants === currentUser) {
+                this.setState({ isDisabled: true, userCoords: clickedCoords })
+            } else this.setState({ userCoords: clickedCoords, isDisabled: false })
+        }).catch((error)=> {
+            console.log(error)
+        })
+
+      
         
     }
 
@@ -199,7 +203,7 @@ class MapContainer extends Component {
 
 
     render() { 
-        console.log(this.state.experiences)
+        // console.log(this.state.experiences)
       
     let Markers = []
       if (this.state.markerCoordinates !== '') {
