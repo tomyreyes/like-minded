@@ -4,6 +4,7 @@ const port = 8080
 const User = require ('./models/Users')
 const Experience = require ('./models/Experiences')
 const bodyParser = require('body-parser')
+const Participants = require('./models/Participants')
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");

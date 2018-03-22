@@ -145,8 +145,9 @@ class MapContainer extends Component {
         let currentUser = firebase.auth().currentUser.displayName
         axios.get('http://localhost:8080/getexperiences')
         .then((res)=>{
+            
             let filter = res.data.filter((experience) => (experience.location === JSON.stringify(exp.position)) ? experience : '')
-            this.setState({experience: filter, display: true})
+            this.setState({experience: filter, display: true, buttonLogic: filter})
             let clickedCoords = (JSON.parse(filter[0].location))
 
             if (filter[0].participants === currentUser) {
@@ -154,10 +155,7 @@ class MapContainer extends Component {
             } else this.setState({ userCoords: clickedCoords, isDisabled: false })
         }).catch((error)=> {
             console.log(error)
-        })
-
-      
-        
+        })  
     }
 
     close = () =>{
@@ -172,7 +170,6 @@ class MapContainer extends Component {
        .then((res)=>{
            let listExperiences = res.data
            let filter = listExperiences.filter((experience)=> (experience.id === this.state.experience[0].id) ? experience : '')
-        //    this.setState({experience: filter}) this is out of the question 
            axios.get('http://localhost:8080/getuser')
            .then((res)=>{
                
@@ -180,32 +177,35 @@ class MapContainer extends Component {
                let filter = listExperiences.filter((experience) => (experience.id === this.state.experience[0].id) ? experience : '')
 
                let filterUserId = userArr.filter((user)=> (user.id === filter[0].User_id) ? user : '')
-               console.log(filter[0].participants)
-               console.log(filterUserId[0])
-               console.log(currentEmail)
-               if (filterUserId[0].email !== currentEmail){
-                //    console.log(filter[0].participants.concat(', ' + currentUser))
+               let nameArr = filter[0].participants.split(',')
+               let isMatch = false
+               let userNeedsSpace = ' ' + currentUser
+                nameArr.forEach((name) => {
+                   if (name === userNeedsSpace) {
+                       this.setState({isMatch:true}) 
+                        isMatch = true
+                   }
+               }) 
+               console.log(isMatch)
+               if (filterUserId[0].email !== currentEmail && (isMatch === false)){
+                   console.log('im adding')
                    this.setState({participants: filter[0].participants.concat(', '+ currentUser)})
                    axios.put('http://localhost:8080/updateparticipants', {
                     participants: this.state.participants,
                     id: this.state.experience[0].id
                     }) 
-                } else console.log('error')
-           })
-           
-        //    this.setState(
-        //        {
-        //            participants: filter[0].participants
-        //         },()=>{
-        //             this.setState({participants: this.state.participants.concat(', '+ currentUser)})
-                    
-        //         }
-        //     )
-        //    axios.put('http://localhost:8080/updateparticipants', {
-        //        participants: this.state.participants,
-        //        id: this.state.experience[0].id
-        //    }) 
-       }) 
+                } else {
+                    console.log('im deleting')
+                    let userNeedsSpace = ' '+ currentUser
+                   let unJoin = nameArr.filter((user) => (user !== userNeedsSpace ? user : ''))
+                   let remaining = unJoin.join('')
+                   axios.put('http://localhost:8080/updateparticipants', {
+                       participants: remaining,
+                       id: this.state.experience[0].id
+                   }) 
+                }
+            })
+        })
     }
 
 
@@ -214,8 +214,14 @@ class MapContainer extends Component {
       if (this.state.markerCoordinates !== '') {
         Markers = this.state.markerCoordinates.map((coord, i)=>{
             return (<Marker key={i} position={coord} onClick={this.showExperience}/>)
-        }) 
-    }       
+        })
+        //   let derp = this.state.markerCoordinates.map((coord, i) => {
+        //       return (<Button key={i} onChange={this.join}>{(this.state.isJoined) ? 'Leave' : 'Join'}</Button>)
+        //   }) 
+    }
+    
+        
+    
     const styles= {
         modal: {
             marginTop: '100px'
@@ -276,7 +282,7 @@ class MapContainer extends Component {
                         }}
                         zoom={14}>
                         { Markers }
-
+                        
                     </Map>
                 </div>
                     : <div>
@@ -308,14 +314,16 @@ class MapContainer extends Component {
                             <p>{this.state.experience[0].participants}</p>
                         </Modal.Description>
                     </Modal.Content>
-                    <Button onClick={this.join} disabled={this.state.isDisabled}>{(this.state.isJoined) ? 'Leave' : 'Join'}</Button>
+                    
+                    <Button onClick={this.join} disabled={this.state.isDisabled}>
+                    {(this.state.isJoined) ? 'Leave' : 'Join'}</Button> 
                 </Modal>
                  : ''}
                 </div>
         )
     }
 }
-
+//check experience to match the experience to properly do LEave and Join 
 export default GoogleApiWrapper({
     apiKey: 'AIzaSyA9pQUy3AG6PM-Gi-Jyz9MUiFgFl-UQ3SA'
 })(MapContainer)
