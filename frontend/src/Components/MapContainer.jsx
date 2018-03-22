@@ -191,6 +191,7 @@ class MapContainer extends Component {
        .then((res)=>{
            let listExperiences = res.data
            let filter = listExperiences.filter((experience)=> (experience.id === this.state.experience[0].id) ? experience : '')
+           console.log(filter)
            axios.get('http://localhost:8080/getuser')
            .then((res)=>{
                
@@ -214,6 +215,14 @@ class MapContainer extends Component {
                    axios.put('http://localhost:8080/updateparticipants', {
                     participants: this.state.participants,
                     id: this.state.experience[0].id
+                    }).then((res)=>{
+                        axios.get('http://localhost:8080/getexperiences')
+                            .then((res) => {
+                                let listExperiences = res.data
+                                let filter = listExperiences.filter((experience) => (experience.id === this.state.experience[0].id) ? experience : '')
+                                console.log(filter)
+                                this.setState({ participants: filter[0].participants, experience: filter})
+                            })
                     }) 
                 } else {
                     console.log('im deleting')
@@ -223,9 +232,19 @@ class MapContainer extends Component {
                    axios.put('http://localhost:8080/updateparticipants', {
                        participants: remaining,
                        id: this.state.experience[0].id
-                   }) 
+                   }).then((res)=>{
+                       axios.get('http://localhost:8080/getexperiences')
+                           .then((res) => {
+                               let listExperiences = res.data
+                               let filter = listExperiences.filter((experience) => (experience.id === this.state.experience[0].id) ? experience : '')
+                               console.log(filter)
+                               this.setState({ participants: filter[0].participants, experience: filter })
+                           })
+                   })
                 }
             })
+           
+
         })
     }
 
@@ -236,7 +255,7 @@ class MapContainer extends Component {
         Markers = this.state.markerCoordinates.map((coord, i)=>{
             return (<Marker key={i} position={coord} onClick={this.showExperience}/>)
         })
-        //   let derp = this.state.markerCoordinates.map((coord, i) => {
+        //   let individualButton = this.state.markerCoordinates.map((coord, i) => {
         //       return (<Button key={i} onChange={this.join}>{(this.state.isJoined) ? 'Leave' : 'Join'}</Button>)
         //   }) 
     }
@@ -245,31 +264,43 @@ class MapContainer extends Component {
     
     const styles= {
         modal: {
-            marginTop: '100px'
+            marginTop: '100px',
+            // marginLeft: '460px'
+            textAlign:'center'
          },
         clock: {
             zIndex: 2
         },
         modal2: {
             marginTop:'100px',
-            padding: '10px'
+            padding: '10px',
+            marginLeft: '490px'
         },
         closeButton: {
             textAlign: 'right'
         },
         header:{
             textAlign: 'center'
-
+        },
+        searchArea: {
+            background: '#1b1c1d',
+            textAlign: 'center',
+            marginTop: '-2px',
+            paddingRight: '92px'
+        },
+        inputMargin: {
+            paddingBottom: '30px'
         }
+
     }
         const { userCoords } = this.state
         
         return ( 
-            <div>
-                <Input placeholder='Enter Location' onChange={this.searchInput} onKeyDown={(e) => { if (e.keyCode === 13) this.handleSearch(this.state.search) }}></Input>
+            <div style={styles.searchArea}>
+                <Input style={styles.inputMargin} placeholder='Enter Location' onChange={this.searchInput} onKeyDown={(e) => { if (e.keyCode === 13) this.handleSearch(this.state.search) }}></Input>
                 
 
-                <Modal style = {styles.modal} trigger={<Button>Create</Button>}>
+                <Modal style={styles.modal} trigger={<Button color='violet'>Create</Button>}>
                     <Modal.Header >Create an Experience</Modal.Header>
                     <Modal.Content>
                         <div>
@@ -280,11 +311,11 @@ class MapContainer extends Component {
                                     onChange={this.onChange}
                                     value={this.state.time}/>
                            </Modal>
-                            <Form.Input label='Duration' value={this.state.duration} type="number" onChange={this.durationInput} />
+                            <Form.Input label='Duration - in minutes' value={this.state.duration} type="number" onChange={this.durationInput} />
                             <Form.Input label='Location' value={this.state.location} onChange={this.locationInput} />
                             <Form.Input label='Max participants' value={this.state.max} onChange={this.maxInput} />
                             <Form.TextArea label='Description' value={this.state.description} onChange={this.detailsInput} />
-                            <Button primary onClick={this.create}>Create</Button>
+                            <Button primary onClick={this.create} color='violet'>Create</Button>
                             </Form>
                             
                             </div>
@@ -320,7 +351,7 @@ class MapContainer extends Component {
                 {!(this.state.experience === '') ? 
                 <Modal style={styles.modal2} open={this.state.display} closeOnDimmerClick>
                         <div style={styles.closeButton}>
-                        <Button  onClick={this.close}>Close</Button> 
+                        <Button  onClick={this.close} color='red'>Close</Button> 
                         </div>
                     <Modal.Header style={styles.header}>{this.state.experience[0].title}</Modal.Header>
                     <Modal.Content>
@@ -336,7 +367,7 @@ class MapContainer extends Component {
                         </Modal.Description>
                     </Modal.Content>
                     
-                    <Button onClick={this.join} disabled={this.state.isDisabled}>
+                    <Button color='violet' onClick={this.join} disabled={this.state.isDisabled}>
                     {(this.state.isJoined) ? 'Leave' : 'Join'}</Button> 
                 </Modal>
                  : ''}

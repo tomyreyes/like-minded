@@ -24,15 +24,19 @@ class Nav extends Component {
         const { activeItem } = this.state
         const user = firebase.auth().currentUser
 
+        const styles = {
+            margin: '0'
+        }
+
         return (
-            <Segment inverted>
+            <Segment inverted style={styles}>
                 <Menu inverted pointing secondary>
                     <Menu.Item name='home' active={activeItem === 'home'} onClick={this.handleItemClick} />
                     <Menu.Item name='messages' active={activeItem === 'messages'} onClick={this.handleItemClick} />
                     <Menu.Item name='friends' active={activeItem === 'friends'} onClick={this.handleItemClick} />
                     <Menu.Menu position='right'>
                      {user ? <Menu.Item name={user.displayName}/>: '' }
-                    {user ? <Menu.Item onClick={()=> { this.props.logout() }}><Button>Logout</Button> </Menu.Item> : ''}
+                    {user ? <Menu.Item onClick={()=> { this.props.logout() }}><Button color='violet'>Logout</Button> </Menu.Item> : ''}
                     </Menu.Menu>
                 </Menu>
             </Segment>

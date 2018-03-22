@@ -20,15 +20,15 @@ class App extends Component {
       loggedOut: false
     }
   }
-    login = () => {
-      const result = auth().signInWithPopup(facebook)
-      .then((result) => {
-          this.setState({ user: result.user, loggedIn: true, loggedOut: false });
-        // axios.post('http://localhost:8080/adduser', {
-        //   email: firebase.auth().currentUser.email
-        // })
-        })
-  }
+  //   login = () => {
+  //     const result = auth().signInWithPopup(facebook)
+  //     .then((result) => {
+  //         this.setState({ user: result.user, loggedIn: true, loggedOut: false });
+  //       axios.post('http://localhost:8080/adduser', {
+  //         email: firebase.auth().currentUser.email
+  //       })
+  //       })
+  // }
 
   googleLogin = () =>{
     const result = auth().signInWithPopup(gmail)
