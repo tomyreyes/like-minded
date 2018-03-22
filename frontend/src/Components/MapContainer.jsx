@@ -26,7 +26,8 @@ class MapContainer extends Component {
             max: '',
             currentUser:'',
             isJoined: false,
-            isDisabled: false
+            isDisabled: false,
+            search:''
         }
     }
 
@@ -73,7 +74,16 @@ class MapContainer extends Component {
         }
     }
 
-
+    searchInput = (e)=>{
+        this.setState({search: e.target.value})
+    }
+    handleSearch = () =>{
+        axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.userCoords.lat},${this.state.userCoords.lng}&radius=50000&keyword=${this.state.search}&key=AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw`)
+            .then((res) => {
+                let searchCoords = res.data.results[0].geometry.location
+                this.setState({userCoords: searchCoords})
+            })
+    }
 
 
     //Code for the experience creation modal 
@@ -136,6 +146,17 @@ class MapContainer extends Component {
                 placeName: this.state.placeName,
                 participants: this.state.currentUser
             })
+            this.setState(
+                {
+                title: "",
+                time: this.state.time,
+                duration: "",
+                details: "",
+                location: "",
+                max: ""
+                }
+            )
+
         })
 
     }
@@ -245,7 +266,7 @@ class MapContainer extends Component {
         
         return ( 
             <div>
-                <Input placeholder='Enter Location' onChange={this.handleInput}></Input>
+                <Input placeholder='Enter Location' onChange={this.searchInput} onKeyDown={(e) => { if (e.keyCode === 13) this.handleSearch(this.state.search) }}></Input>
                 
 
                 <Modal style = {styles.modal} trigger={<Button>Create</Button>}>
