@@ -1,6 +1,6 @@
 const express = require ('express')
 const app = express()
-const port = 8080
+const PORT = process.env.PORT || 8080;
 const User = require ('./models/Users')
 const Experience = require ('./models/Experiences')
 const bodyParser = require('body-parser')
@@ -144,6 +144,6 @@ app.put('/updateparticipants', (req, res)=>{
     
 
 
-app.listen(port, ()=>{
-    console.log(`Listening on port: ${port}`)
+app.listen(PORT, ()=>{
+    console.log(`Listening on port: ${PORT}`)
 })

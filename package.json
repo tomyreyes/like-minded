@@ -1,0 +1,19 @@
+{
+  "name": "like-minded",
+  "version": "1.0.0",
+  "description": "There are times in our lives when we must enjoy experiences by ourselves. This could be due to time constraints between you and your loved ones,  or simply their lack of interest in the activity you are interested in.  Like-Minded was comprised from the notion that experiences are best enjoyed with others. Within this app, users are able  to create experiences that other users with similar interests can take part in.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomyreyes/like-minded.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tomyreyes/like-minded/issues"
+  },
+  "homepage": "https://github.com/tomyreyes/like-minded#readme"
+}
