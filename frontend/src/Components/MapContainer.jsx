@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
-import { Button, Form, Header, Input, Modal} from 'semantic-ui-react'
+import { Button, Dimmer, Form, Header, Image, Input, Loader, Modal, Segment} from 'semantic-ui-react'
 import TimePicker from 'react-time-picker'
 import axios from 'axios'
 import firebase from 'firebase'
@@ -27,7 +27,8 @@ class MapContainer extends Component {
             currentUser:'',
             isJoined: false,
             isDisabled: false,
-            search:''
+            search:'',
+            loader: true
         }
     }
 
@@ -43,22 +44,25 @@ class MapContainer extends Component {
     }
    
     componentWillReceiveProps(nextProps) {
-        if(this.props.coords !== nextProps.coords){
+        if(nextProps.coords !== null){
             let newCoords = {
                 lat: nextProps.coords.latitude,
                 lng: nextProps.coords.longitude
             }
             this.setState(
                 {
-                    userCoords: newCoords
+                    userCoords: newCoords,
+                    loader:false
                 }
             )
-        } else {
-            this.setState(
-                {
-                    userCoords: {lat: 49.2193, lng: -122.5984}
-                }
-            )
+        // } else {
+        //     console.log(this.state.userCoords)
+
+        //     this.setState(
+        //         {
+        //             userCoords: {lat: 49.2193, lng: -122.5984}
+        //         }
+            // )
         }
     }
 
@@ -67,7 +71,7 @@ class MapContainer extends Component {
     }
     componentDidUpdate(previousProps, previousState){
         if (previousState.userCoords !== this.state.userCoords){
-            this.setState({userCoords: this.state.userCoords})
+            this.setState({ userCoords: this.state.userCoords})
         }
         if (previousState.location !== this.state.location) {
             this.setState({experiences: this.state.experiences})
@@ -286,10 +290,27 @@ class MapContainer extends Component {
             background: '#1b1c1d',
             textAlign: 'center',
             marginTop: '-2px',
-            paddingRight: '92px'
+            flex: 1
         },
         inputMargin: {
             paddingBottom: '30px'
+        },
+        loader: {
+            top: '500px',
+            color: "black",
+            
+        },
+        dimmer: {
+            background:'#1b1c1d'
+        },
+        brand:{
+            top: -10,
+            textAlign: 'center',
+            color: 'white'
+        }, 
+        divv:{
+            textAlign: 'center',
+            position: 'fixed'
         }
 
     }
@@ -297,6 +318,9 @@ class MapContainer extends Component {
         
         return ( 
             <div style={styles.searchArea}>
+                {/* <div style={styles.divv}><h1 style={styles.brand}>Like-Minded</h1></div> */}
+
+                {/* <div style={styles.divv}><h1 style={styles.brand}>Like-Minded</h1></div> */}
                 <Input style={styles.inputMargin} placeholder='Enter Location' onChange={this.searchInput} onKeyDown={(e) => { if (e.keyCode === 13) this.handleSearch(this.state.search) }}></Input>
                 
 
@@ -324,7 +348,14 @@ class MapContainer extends Component {
                     </Modal.Content>
                 </Modal>
                 
-            
+                {(this.state.loader === true) ?
+                    <div className="Load" style={styles.dimmer} >
+                        <Segment style={styles.dimmer}>
+                            <Dimmer style={styles.dimmer} active>
+                                <Loader style={styles.loader} size="massive" indeterminate>Getting Location</Loader>
+                            </Dimmer>
+                        </Segment>
+                        </div> : ""} : 
                 {!(this.state.markerCoordinates === '') ? <div>
                     <Map
                         google={this.props.google}
@@ -337,7 +368,14 @@ class MapContainer extends Component {
                         
                     </Map>
                 </div>
-                    : <div>
+                :
+                    // : <div>
+                    // <Segment>
+                    //     <Dimmer active={this.state.dimmer}>
+                    //         <Loader size="massive" indeterminate>Getting Location</Loader>
+                    //     </Dimmer>
+                    // </Segment>
+                    <div>
                         <Map
                             google={this.props.google}
                             center={{
@@ -347,7 +385,10 @@ class MapContainer extends Component {
                             zoom={14}>
 
                         </Map>
-                    </div> }
+                    </div> 
+                    // </div>
+
+                    }
                 {!(this.state.experience === '') ? 
                 <Modal style={styles.modal2} open={this.state.display} closeOnDimmerClick>
                         <div style={styles.closeButton}>

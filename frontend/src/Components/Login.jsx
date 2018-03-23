@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Card, Container, Icon, Image } from 'semantic-ui-react'
+import { Button, Container, Icon, Image } from 'semantic-ui-react'
 
 class Login extends Component {
     constructor(props){
@@ -11,21 +11,27 @@ class Login extends Component {
     }
 render(){
     const styles = {
+        icon :{
         paddingLeft: '10px',
         color: 'white'
+        }, 
+        container : {
+            textAlign: 'center'
+        },
+        logo : {
+            paddingLeft: '70px'
+        }
     }
     return(
-        <Card fluid>
-        <Container textAlign="center">
-
-            <Image src="logo.png"/>
+        
+        <Container style={styles.container}>
+            <Image style={styles.logo} src="logo.png"/>
             <h1>Enjoys experiences with others.</h1>
             {/* <div><Button primary onClick={()=>{ this.props.login() }}>
                 Login with <Icon name="facebook f" size="large" />
       </Button></div> */}
-            <div><Button color="red" onClick={()=>{ this.props.googleLogin() }}>Login with<Icon style={styles}name="google plus" size="big"/></Button></div>
+            <div><Button color="red" onClick={()=>{ this.props.googleLogin() }}>Login with<Icon style={styles.icon}name="google plus" size="big"/></Button></div>
         </Container>
-        </Card>
     )
 }
 }

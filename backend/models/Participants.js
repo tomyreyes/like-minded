@@ -11,16 +11,12 @@ const knex = require('knex')({
 const bookshelf = require('bookshelf')(knex);
 
 
-const Experiences = bookshelf.Model.extend({
+const Participants = bookshelf.Model.extend({
     tableName: 'Experiences',
     user: function () {
-        return this.belongsTo(Users)
-    },
-    participants: function () {
         return this.hasMany(Users)
     }
 })
 
 
-
-module.exports = Experiences
+module.exports = Participants

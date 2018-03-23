@@ -57,10 +57,22 @@ class App extends Component {
     const { from } = '/'
     const { coords } = this.props
     const { reverse } = '/map'
-    console.log(coords)
+
+    const styles = {
+      brand: {
+        position: "absolute",
+        height: "50px",
+        width: "100%",
+        zIndex: 1,
+        textAlign: "center",
+        color: "white",
+        paddingTop: "14px"
+      }
+    }
     
     return (
       <div>
+        <div style={styles.brand}><h1>Like-Minded</h1></div>
        <Nav user = { user } logout = { this.logout }/>
         
         <Switch>
@@ -72,7 +84,7 @@ class App extends Component {
             return <MapContainer coords = { coords } handleInput = { this.handleInput } />
           }} />
         </Switch>
-          {loggedIn && (
+          {(loggedIn && coords !=='') && (
             <Redirect to={from || '/map'} />
           )}
           {loggedOut && (
@@ -88,7 +100,7 @@ export default geolocated(
     positionOptions: {
       enableHighAccuracy: true
     }, 
-    userDecisionTimeout: 5000,
+    userDecisionTimeout: 10000,
     geolocationProvider: navigator.geolocation
 }
 )(App);
