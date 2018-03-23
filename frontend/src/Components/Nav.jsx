@@ -37,7 +37,8 @@ class Nav extends Component {
             logout:{
                 position: 'absolute',
                 right: 0,
-                flex: 1
+                flex: 1,
+                zIndex: 1000000
 
             }
 
