@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
-import { Button, Dimmer, Form, Header, Image, Input, Loader, Modal, Segment} from 'semantic-ui-react'
+import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
+import { Button, Dimmer, Form, Header, Input, Loader, Modal, Segment} from 'semantic-ui-react'
 import TimePicker from 'react-time-picker'
 import axios from 'axios'
 import firebase from 'firebase'
@@ -55,14 +55,6 @@ class MapContainer extends Component {
                     loader:false
                 }
             )
-        // } else {
-        //     console.log(this.state.userCoords)
-
-        //     this.setState(
-        //         {
-        //             userCoords: {lat: 49.2193, lng: -122.5984}
-        //         }
-            // )
         }
     }
 
@@ -88,7 +80,6 @@ class MapContainer extends Component {
                 this.setState({userCoords: searchCoords})
             })
     }
-
 
     //Code for the experience creation modal 
     titleInput = (e) =>{
@@ -195,7 +186,6 @@ class MapContainer extends Component {
        .then((res)=>{
            let listExperiences = res.data
            let filter = listExperiences.filter((experience)=> (experience.id === this.state.experience[0].id) ? experience : '')
-           console.log(filter)
            axios.get('http://localhost:8080/getuser')
            .then((res)=>{
                
@@ -212,9 +202,7 @@ class MapContainer extends Component {
                         isMatch = true
                    }
                }) 
-               console.log(isMatch)
                if (filterUserId[0].email !== currentEmail && (isMatch === false)){
-                   console.log('im adding')
                    this.setState({participants: filter[0].participants.concat(', '+ currentUser)})
                    axios.put('http://localhost:8080/updateparticipants', {
                     participants: this.state.participants,
@@ -224,12 +212,10 @@ class MapContainer extends Component {
                             .then((res) => {
                                 let listExperiences = res.data
                                 let filter = listExperiences.filter((experience) => (experience.id === this.state.experience[0].id) ? experience : '')
-                                console.log(filter)
                                 this.setState({ participants: filter[0].participants, experience: filter})
                             })
                     }) 
                 } else {
-                    console.log('im deleting')
                     let userNeedsSpace = ' '+ currentUser
                    let unJoin = nameArr.filter((user) => (user !== userNeedsSpace ? user : ''))
                    let remaining = unJoin.join('')
@@ -241,17 +227,13 @@ class MapContainer extends Component {
                            .then((res) => {
                                let listExperiences = res.data
                                let filter = listExperiences.filter((experience) => (experience.id === this.state.experience[0].id) ? experience : '')
-                               console.log(filter)
                                this.setState({ participants: filter[0].participants, experience: filter })
                            })
                    })
                 }
             })
-           
-
         })
     }
-
 
     render() { 
     let Markers = []
@@ -259,17 +241,11 @@ class MapContainer extends Component {
         Markers = this.state.markerCoordinates.map((coord, i)=>{
             return (<Marker key={i} position={coord} onClick={this.showExperience}/>)
         })
-        //   let individualButton = this.state.markerCoordinates.map((coord, i) => {
-        //       return (<Button key={i} onChange={this.join}>{(this.state.isJoined) ? 'Leave' : 'Join'}</Button>)
-        //   }) 
     }
-    
-        
     
     const styles= {
         modal: {
             marginTop: '100px',
-            // marginLeft: '460px'
             textAlign:'center'
          },
         clock: {
@@ -318,32 +294,26 @@ class MapContainer extends Component {
         
         return ( 
             <div style={styles.searchArea}>
-                {/* <div style={styles.divv}><h1 style={styles.brand}>Like-Minded</h1></div> */}
-
-                {/* <div style={styles.divv}><h1 style={styles.brand}>Like-Minded</h1></div> */}
-                <Input style={styles.inputMargin} placeholder='Enter Location' onChange={this.searchInput} onKeyDown={(e) => { if (e.keyCode === 13) this.handleSearch(this.state.search) }}></Input>
-                
-
-                <Modal style={styles.modal} trigger={<Button color='violet'>Create</Button>}>
+                <Input style={styles.inputMargin} placeholder="Enter Location" onChange={this.searchInput} onKeyDown={(e) => { if (e.keyCode === 13) this.handleSearch(this.state.search) }}></Input>
+                <Modal style={styles.modal} trigger={<Button color="violet">Create</Button>}>
                     <Modal.Header >Create an Experience</Modal.Header>
                     <Modal.Content>
                         <div>
                             <Form>
-                            <Form.Input label='Title:' value={this.state.title} onChange={this.titleInput} />
+                            <Form.Input label="Title:" value={this.state.title} onChange={this.titleInput} />
                             <Modal style = {styles.modal} trigger={<Button>Set Time</Button>}>
                                 <TimePicker
                                     onChange={this.onChange}
                                     value={this.state.time}/>
                            </Modal>
-                            <Form.Input label='Duration - in minutes' value={this.state.duration} type="number" onChange={this.durationInput} />
-                            <Form.Input label='Location' value={this.state.location} onChange={this.locationInput} />
-                            <Form.Input label='Max participants' value={this.state.max} onChange={this.maxInput} />
-                            <Form.TextArea label='Description' value={this.state.description} onChange={this.detailsInput} />
-                            <Button primary onClick={this.create} color='violet'>Create</Button>
+                            <Form.Input label="Duration - in minutes" value={this.state.duration} type="number" onChange={this.durationInput} />
+                            <Form.Input label="Location" value={this.state.location} onChange={this.locationInput} />
+                            <Form.Input label="Max participants" value={this.state.max} onChange={this.maxInput} />
+                            <Form.TextArea label="Description" value={this.state.description} onChange={this.detailsInput} />
+                            <Button primary onClick={this.create} color="violet">Create</Button>
                             </Form>
                             
                             </div>
-
 
                     </Modal.Content>
                 </Modal>
@@ -356,7 +326,7 @@ class MapContainer extends Component {
                             </Dimmer>
                         </Segment>
                         </div> : ""} : 
-                {!(this.state.markerCoordinates === '') ? <div>
+                {!(this.state.markerCoordinates === "") ? <div>
                     <Map
                         google={this.props.google}
                         center={{
@@ -369,12 +339,6 @@ class MapContainer extends Component {
                     </Map>
                 </div>
                 :
-                    // : <div>
-                    // <Segment>
-                    //     <Dimmer active={this.state.dimmer}>
-                    //         <Loader size="massive" indeterminate>Getting Location</Loader>
-                    //     </Dimmer>
-                    // </Segment>
                     <div>
                         <Map
                             google={this.props.google}
@@ -386,13 +350,12 @@ class MapContainer extends Component {
 
                         </Map>
                     </div> 
-                    // </div>
 
                     }
                 {!(this.state.experience === '') ? 
                 <Modal style={styles.modal2} open={this.state.display} closeOnDimmerClick>
                         <div style={styles.closeButton}>
-                        <Button  onClick={this.close} color='red'>Close</Button> 
+                        <Button  onClick={this.close} color="red">Close</Button> 
                         </div>
                     <Modal.Header style={styles.header}>{this.state.experience[0].title}</Modal.Header>
                     <Modal.Content>
@@ -401,6 +364,8 @@ class MapContainer extends Component {
                             <p>{this.state.experience[0].time}</p>    
                             <Header>Details</Header>
                             <p>{this.state.experience[0].details}</p>
+                            <Header>Location</Header>
+                            <p>{this.state.experience[0].placeName}</p>
                             <Header>Max Participants</Header>
                             <p>{this.state.experience[0].max}</p>
                             <Header>People Attending</Header>
@@ -408,15 +373,15 @@ class MapContainer extends Component {
                         </Modal.Description>
                     </Modal.Content>
                     
-                    <Button color='violet' onClick={this.join} disabled={this.state.isDisabled}>
-                    {(this.state.isJoined) ? 'Leave' : 'Join'}</Button> 
+                    <Button color="violet" onClick={this.join} disabled={this.state.isDisabled}>
+                    {(this.state.isJoined) ? "Leave" : "Join"}</Button> 
                 </Modal>
                  : ''}
                 </div>
         )
     }
 }
-//check experience to match the experience to properly do LEave and Join 
+
 export default GoogleApiWrapper({
     apiKey: 'AIzaSyA9pQUy3AG6PM-Gi-Jyz9MUiFgFl-UQ3SA'
 })(MapContainer)

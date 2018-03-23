@@ -8,7 +8,8 @@ const Participants = require('./models/Participants')
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, 'Accept': 'application/json', Authorization");
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
     next();
 });
 
@@ -35,35 +36,6 @@ app.get('/getuser' , (req, res) =>{
     })
 })
 
-// app.get('/getid', (req, res)=> {
-//     User.where({email:'tomysteeze@gmail.com'})
-//     .fetch()
-//     .then(user => {
-//         console.log(user.attributes.id)
-//     })
-// })
-
-// app.post('/adduser', (req, res) => {
-//     let currentEmail = req.body.email
-//     let arrayEmail
-//     let newUser = new User({
-//         email: req.body.email,
-//         displayName: req.body.displayName
-//     })
-//     User.fetchAll()
-//         .then(user => {
-//         let dbEmails = user.modelsmap(user => user.attributes.email)
-//             for (let i = 0; i < arrayEmail.length - 1; i++) {
-//                 if (arrayEmail[i]!== currentEmail) {
-//                     new User.save()
-//                         .then(user => {
-//                             console.log(user)
-//                                             })}
-//                  else console.log('same user info')
-//             } 
-//             res.json({ success: true })
-// })
-
 app.post('/adduser', (req, res)=>{
     let receivedEmail = req.body.email
     let arrayEmail
@@ -71,18 +43,6 @@ app.post('/adduser', (req, res)=>{
         email: req.body.email,
         displayName: req.body.displayName
     })
-    // User.fetchAll()
-    //     .then(user => {
-    //         arrayEmail = user.models.map(user => user.attributes.email)
-    //             for(let i = 0; i < arrayEmail.length - 1; i++) {
-    //                 if (arrayEmail[i] !== receivedEmail) {
-                        newUser.save()
-                            .then(user => {
-                                console.log(user)
-                            })
-        //             }else console.log('this exists')
-        //         } res.json({success:true})
-        // })
 })
     
 
@@ -101,8 +61,6 @@ app.get('/getexperiences', (req, res)=> {
         res.send(experiencesArray)
     })
 })
-
-//app.get user who owns the experience? 
 
 app.post('/addexperience', (req, res) => {
 
@@ -140,9 +98,6 @@ app.put('/updateparticipants', (req, res)=>{
     .save({participants: newParticipants}, {patch: true})
     res.json({success:true})
 })
-
-    
-
 
 app.listen(PORT, ()=>{
     console.log(`Listening on port: ${PORT}`)

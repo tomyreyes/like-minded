@@ -29,7 +29,6 @@ class Nav extends Component {
                 margin: '0'
             }, 
             brand: {
-                // paddingLeft: '552px',
                 flex: 1,
                 textAlign: 'center'
 
@@ -41,7 +40,6 @@ class Nav extends Component {
                 zIndex: 1000000
 
             }
-
         }
 
         return (

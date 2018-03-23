@@ -27,9 +27,6 @@ render(){
         <Container style={styles.container}>
             <Image style={styles.logo} src="logo.png"/>
             <h1>Enjoys experiences with others.</h1>
-            {/* <div><Button primary onClick={()=>{ this.props.login() }}>
-                Login with <Icon name="facebook f" size="large" />
-      </Button></div> */}
             <div><Button color="red" onClick={()=>{ this.props.googleLogin() }}>Login with<Icon style={styles.icon}name="google plus" size="big"/></Button></div>
         </Container>
     )
