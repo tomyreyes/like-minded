@@ -15,7 +15,7 @@ the app access.
 <img width="1680" alt="screen shot 2018-03-24 at 10 18 26 am" src="https://user-images.githubusercontent.com/26396771/37867813-e71e446a-2f5a-11e8-9b1e-8a9256368e31.png">
 
 
-By clicking on these create button on the map, users will be able to create an experience others people can join. 
+By clicking on the create button on the map, users will be able to create an experience others people can join. 
 <img width="1677" alt="screen shot 2018-03-24 at 10 19 44 am" src="https://user-images.githubusercontent.com/26396771/37867832-2ecd7a38-2f5b-11e8-98eb-3058fb57f81a.png">
 Once an event is created, a marker will instantaneously be placed on the location where the experience will be taking place. 
 <img width="1678" alt="screen shot 2018-03-24 at 10 20 16 am" src="https://user-images.githubusercontent.com/26396771/37867839-47096e04-2f5b-11e8-8a00-002a2c9dbaf4.png">
