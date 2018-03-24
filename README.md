@@ -8,7 +8,7 @@ to create experiences that other users with similar interests can take part in.
 
 Experiences can represent anything users are interested in whether it is a board game night or a trip to the beach. Like-Minded is an open world type application. 
 
-Experiences users join or create are represented as pins within a map. Once a user signs into Like-Minded, a map of experiences created by other users
+Experiences users join or create are represented as markers within a map. Once a user signs into Like-Minded, a map of experiences created by other users
 will be generated. The initial map location and experiences users will see is dependent on their location, if they choose to allow
 the app access.
 
