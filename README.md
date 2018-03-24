@@ -15,11 +15,12 @@ the app access.
 <img width="1680" alt="screen shot 2018-03-24 at 10 18 26 am" src="https://user-images.githubusercontent.com/26396771/37867813-e71e446a-2f5a-11e8-9b1e-8a9256368e31.png">
 
 
-By clicking on these pins on the map, users will be given details of the experience, as well as the option to join. If users are not 
-interested in the experiences they see on the map, they can create their own experience or move the map to a different location.
-
+By clicking on these create button on the map, users will be able to create an experience others people can join. 
 <img width="1677" alt="screen shot 2018-03-24 at 10 19 44 am" src="https://user-images.githubusercontent.com/26396771/37867832-2ecd7a38-2f5b-11e8-98eb-3058fb57f81a.png">
+Once an event is created, a marker will instantaneously be placed on the location where the experience will be taking place. 
 <img width="1678" alt="screen shot 2018-03-24 at 10 20 16 am" src="https://user-images.githubusercontent.com/26396771/37867839-47096e04-2f5b-11e8-8a00-002a2c9dbaf4.png">
+
+Users can click on these markers where they will be given details of the experience, as well as the option to join. 
 <img width="1675" alt="screen shot 2018-03-24 at 10 20 23 am" src="https://user-images.githubusercontent.com/26396771/37867840-5b8dfc3c-2f5b-11e8-8fc5-6784c672c1f4.png">
 
 
@@ -27,7 +28,7 @@ This application at its current state is a full stack application. For the front
 Finally, I am using Google Maps and Google Places API for geolocation, place search and pins. 
 
 Like-Minded is still in its beginning phase in its development. I have several phases planned out for this app that includes the creation
-of channels where users participating in the same experiences can talk to eachother, as well as add each other as friends on this app. Along with this, I plan to 
+of channels where users participating in the same experiences can talk to eachother,as well as creating a filter and different coloured markers that can help users distinguish between different types of experiences. Along with this, I plan to 
 either venture off into using Redux or React Native, as well as turn this app into a progressive web application. 
 
 ## This application was built using:
