@@ -29,7 +29,10 @@ class App extends Component {
         email: firebase.auth().currentUser.email,
         displayName: firebase.auth().currentUser.displayName
       })
+    }).catch(error => {
+      console.log(error)
     })
+
   }
 
   logout=()=> {

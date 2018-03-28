@@ -48,7 +48,6 @@ class Nav extends Component {
                     <Menu.Item name='home' active={activeItem === 'home'} onClick={this.handleItemClick} />
                     <Menu.Item name='messages' active={activeItem === 'messages'} onClick={this.handleItemClick} />
                     <Menu.Item name='friends' active={activeItem === 'friends'} onClick={this.handleItemClick} />
-                    {/* <Menu.Item disabled style={styles.brand}><h1>Like-Minded</h1></Menu.Item> */}
                     <Menu.Menu position="right" style={styles.logout}>
                      {user ? <Menu.Item name={user.displayName}/>: <Menu.Item/> }
                         {user ? <Menu.Item onClick={() => { this.props.logout() }}><Button color='violet'>Logout</Button> </Menu.Item> : <Menu.Item />}

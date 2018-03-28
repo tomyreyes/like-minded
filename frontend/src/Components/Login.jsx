@@ -16,7 +16,8 @@ render(){
         color: 'white'
         }, 
         container : {
-            textAlign: 'center'
+            textAlign: 'center',
+            paddingTop: '80px'
         },
         logo : {
             paddingLeft: '70px'
