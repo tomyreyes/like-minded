@@ -105,7 +105,18 @@ class MapContainer extends Component {
         this.setState({ placeName: this.state.location, currentUser: currentUser })
         axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.userCoords.lat},${this.state.userCoords.lng}&radius=50000&keyword=${this.state.location}&key=AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw`)
             .then((res) => {
+                console.log(res)
+                if (res.data.results[0] === undefined){
+                    alert('location does not exist')
+                    //  this.setState({location: ''})
+                     return 
+                    }
+                    
+                      else {
+
                 let coords = res.data.results[0].geometry.location
+                
+
                 this.setState(
                     {
                         title: this.state.title,
@@ -152,8 +163,8 @@ class MapContainer extends Component {
                         max: ""
                     }
                 )
-            })
-
+            }
+        })
     }
 
     // Experience Modal
