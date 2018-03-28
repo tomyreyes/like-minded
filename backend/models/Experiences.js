@@ -15,9 +15,6 @@ const Experiences = bookshelf.Model.extend({
     tableName: 'Experiences',
     user: function () {
         return this.belongsTo(Users)
-    },
-    participants: function () {
-        return this.hasMany(Users)
     }
 })
 

@@ -142,17 +142,16 @@ class MapContainer extends Component {
                     placeName: this.state.placeName,
                     participants: this.state.currentUser
                 })
-                // this.setState(
-                //     {
-                //         title: "",
-                //         time: this.state.time,
-                //         duration: "",
-                //         details: "",
-                //         location: "",
-                //         max: ""
-                //     }
-                // )
-
+                this.setState(
+                    {
+                        title: "",
+                        time: this.state.time,
+                        duration: "",
+                        details: "",
+                        location: "",
+                        max: ""
+                    }
+                )
             })
 
     }

@@ -32,7 +32,6 @@ class App extends Component {
     }).catch(error => {
       console.log(error)
     })
-
   }
 
   logout=()=> {
@@ -41,9 +40,6 @@ class App extends Component {
     this.setState({ user: null, loggedOut: true, loggedIn: false });
       })
   }
-
-  
-
   render() {
     const { loggedIn } = this.state
     const { loggedOut } = this.state

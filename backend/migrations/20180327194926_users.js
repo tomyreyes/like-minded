@@ -1,4 +1,3 @@
-
 exports.up = function (knex, Promise) {
     return knex.schema
         .createTableIfNotExists('Users', function (user) {
@@ -28,12 +27,6 @@ exports.up = function (knex, Promise) {
                 .notNullable()
             experience.string('max')
                 .notNullable()
-            experience.string
-                .integer('Participant-key')
-                .references('id')
-                .inTable('Users')
-                .notNull()
-                .onDelete('cascade');
             experience
                 .integer('User_id')
                 .references('id')
