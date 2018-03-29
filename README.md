@@ -32,7 +32,7 @@ of channels where users participating in the same experiences can talk to eachot
 either venture off into using Redux or React Native, as well as turn this app into a progressive web application. 
 
 ## Upcoming additions
-+ Clean up design - fix bugs
+- Clean up design - fix bugs
 - Refactor components 
 - User Data from Facebook Login
 - Different colour markers to be able to distinguish between different experience categories
