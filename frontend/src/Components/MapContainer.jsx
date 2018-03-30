@@ -5,6 +5,8 @@ import TimePicker from 'react-time-picker'
 import axios from 'axios'
 import firebase from 'firebase'
 
+const googleAPI = 'AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw'
+
 class MapContainer extends Component {
     constructor(props) {
         super(props)
@@ -73,12 +75,30 @@ class MapContainer extends Component {
     searchInput = (e) => {
         this.setState({ search: e.target.value })
     }
+  
     handleSearch = () => {
-        axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.userCoords.lat},${this.state.userCoords.lng}&radius=50000&keyword=${this.state.search}&key=AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw`)
-            .then((res) => {
-                let searchCoords = res.data.results[0].geometry.location
-                this.setState({ userCoords: searchCoords })
-            })
+        axios({
+            method: 'GET',
+            url:'https://maps.googleapis.com/maps/api/place/nearbysearch/json', 
+
+            headers:{
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+               'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+            },
+            params: {
+                location: `${this.state.userCoords.lat},${this.state.userCoords.lng}`,
+                radius: 50000,
+                keyword: this.state.search,
+                key: googleAPI
+            }
+        }).then((res)=>{
+            let searchCoords = res.data.results[0].geometry.location 
+            this.setState(
+                {
+                    userCoords: searchCoords
+                }
+            )
+        })
     }
 
     //Code for the experience creation modal 
