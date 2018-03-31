@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 import { Button, Dimmer, Form, Header, Input, Loader, Modal, Segment } from 'semantic-ui-react'
-import TimePicker from 'react-time-picker'
 import axios from 'axios'
 import firebase from 'firebase'
+import Search from './Search'
+import CreateExperience from './CreateExperience'
 
 const googleAPI = 'AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw'
 const yelpAPI = 'qHwBybthx8SOAu_231Jff9xKWrt9cq3p2lc1oytmPLmQSdyizg4mVm2wWVTgx9yjkvH-nJrNLdpnhoQRs0fhSWgZ8Ef1aQCAzPf15zPn6WC2nxLiDmpGiwOmGGm-WnYx'
@@ -85,11 +86,20 @@ class MapContainer extends Component {
     }
 
     searchInput = (e) => {
+        console.log(e.target.value)
         this.setState({ search: e.target.value })
     }
   
     handleSearch = () => {
-        
+        console.log('hello')
+        axios({
+            method: 'POST',
+            url:'http://localhost:8080/postsearch',
+            data:{
+                keyword: this.state.search,
+                location: `${this.state.userCoords.lat}, ${this.state.userCoords.lng}`
+            }
+        })
         axios({
             method: 'GET',
             url:'http://localhost:8080/getlocation',  
@@ -102,9 +112,6 @@ class MapContainer extends Component {
             )
         })
     }
-
- 
-
     //Code for the experience creation modal 
     titleInput = (e) => {
         this.setState({ title: e.target.value })
@@ -278,14 +285,7 @@ class MapContainer extends Component {
         }
 
         const styles = {
-            modal: {
-                marginTop: '100px',
-                textAlign: 'center',
-                marginLeft: '497px'
-            },
-            clock: {
-                zIndex: 2
-            },
+           
             modal2: {
                 marginTop: '100px',
                 padding: '10px',
@@ -302,9 +302,6 @@ class MapContainer extends Component {
                 textAlign: 'center',
                 marginTop: '-2px',
                 flex: 1
-            },
-            inputMargin: {
-                paddingBottom: '30px'
             },
             loader: {
                 top: '500px',
@@ -329,30 +326,10 @@ class MapContainer extends Component {
 
         return (
             <div style={styles.searchArea}>
-                <Input style={styles.inputMargin} placeholder="Enter Location" onChange={this.searchInput} onKeyDown={(e) => { if (e.keyCode === 13) this.handleSearch(this.state.search) }}></Input>
-                <Modal style={styles.modal} trigger={<Button color="violet">Create</Button>}>
-                    <Modal.Header >Create an Experience</Modal.Header>
-                    <Modal.Content>
-                        <div>
-                            <Form>
-                                <Form.Input label="Title:" value={this.state.title} onChange={this.titleInput} />
-                                <Modal style={styles.modal} trigger={<Button>Set Time</Button>}>
-                                    <TimePicker
-                                        onChange={this.onChange}
-                                        value={this.state.time} />
-                                </Modal>
-                                <Form.Input label="Duration - in minutes" value={this.state.duration} type="number" onChange={this.durationInput} />
-                                <Form.Input label="Location" value={this.state.location} onChange={this.locationInput} />
-                                <Form.Input label="Max participants" value={this.state.max} onChange={this.maxInput} />
-                                <Form.TextArea label="Description" value={this.state.description} onChange={this.detailsInput} />
-                                <Button primary onClick={this.create} color="violet">Create</Button>
-                            </Form>
-
-                        </div>
-
-                    </Modal.Content>
-                </Modal>
-
+                <Search searchInput={this.searchInput} handleSearch={this.handleSearch} search={this.state.search}/>
+                <CreateExperience title={this.state.title} titleInput={this.titleInput} onChange={this.onChange}
+                max={this.state.max} maxInput={this.maxInput} description={this.state.description} detailsInput={this.detailsInput}
+                create={this.create}/>
                 {(this.state.loader === true) ?
                     <div className="Load" style={styles.dimmer} >
                         <Segment style={styles.dimmer}>

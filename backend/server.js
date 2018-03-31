@@ -51,15 +51,13 @@ app.post('/adduser', (req, res) => {
         displayName: req.body.displayName
     }).save()
 })
-
-
+let location
 app.post('/postsearch', (req, res) => {
-    let location = req.body.search
-    
+    location = req.body
+    res.json(location)
 })
 
 app.get('/getlocation', (req, res) => {
-    
     Axios({
         method: 'GET',
         url: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
