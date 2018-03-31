@@ -5,10 +5,12 @@ const User = require('./models/Users')
 const Experience = require('./models/Experiences')
 const bodyParser = require('body-parser')
 const Participants = require('./models/Participants')
+const Axios = require('axios')
 
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
     next();
 });
 
@@ -27,6 +29,8 @@ const knex = require('knex')({
 
 const bookshelf = require('bookshelf')(knex)
 
+const googleAPI = 'AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw'
+
 app.get('/getuser', (req, res) => {
     User.fetchAll()
         .then(user => {
@@ -34,6 +38,9 @@ app.get('/getuser', (req, res) => {
             res.send(userArr)
         })
 })
+
+
+
 
 app.post('/adduser', (req, res) => {
     let receivedEmail = req.body.email
@@ -44,6 +51,36 @@ app.post('/adduser', (req, res) => {
         displayName: req.body.displayName
     }).save()
 })
+
+
+app.post('/postsearch', (req, res) => {
+    let location = req.body.search
+    
+})
+
+app.get('/getlocation', (req, res) => {
+    
+    Axios({
+        method: 'GET',
+        url: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
+        params: {
+        key: googleAPI,
+        location: '49.2193, -122.5984',
+        keyword: 'Thomas Haney Secondary School, BC',
+        radius: 50000
+        }
+
+    }).then(success =>{
+        console.log(success)
+        res.send(success.data)
+    }).catch(error =>{
+        console.log(error)
+        res.send(error)
+    })
+})
+
+
+
 
 
 app.get('/getcoordinates', (req, res) => {

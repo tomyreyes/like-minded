@@ -9,6 +9,7 @@
   "author": "Tomy Reyes",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "bookshelf": "^0.12.1",
     "express": "^4.16.3",

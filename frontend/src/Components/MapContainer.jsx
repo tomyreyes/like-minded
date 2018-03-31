@@ -6,6 +6,8 @@ import axios from 'axios'
 import firebase from 'firebase'
 
 const googleAPI = 'AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw'
+const yelpAPI = 'qHwBybthx8SOAu_231Jff9xKWrt9cq3p2lc1oytmPLmQSdyizg4mVm2wWVTgx9yjkvH-nJrNLdpnhoQRs0fhSWgZ8Ef1aQCAzPf15zPn6WC2nxLiDmpGiwOmGGm-WnYx'
+
 
 class MapContainer extends Component {
     constructor(props) {
@@ -35,6 +37,9 @@ class MapContainer extends Component {
     }
 
     componentDidMount() {
+        console.log(window)
+      
+        // console.log(window.google.maps.places.version)
         axios.get('http://localhost:8080/getcoordinates')
             .then((res) => {
                 this.setState({ markerCoordinates: res.data })
@@ -43,7 +48,14 @@ class MapContainer extends Component {
             .then((res) => {
                 this.setState({ experiences: res.data })
             })
+        axios.get('http://localhost:8080/getlocation')
+            .then((res) => {
+                console.log(res)
+            })
     }
+
+
+    
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.coords !== null) {
@@ -77,20 +89,10 @@ class MapContainer extends Component {
     }
   
     handleSearch = () => {
+        
         axios({
             method: 'GET',
-            url:'https://maps.googleapis.com/maps/api/place/nearbysearch/json', 
-
-            headers:{
-                'Access-Control-Allow-Origin': 'http://localhost:3000',
-               'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-            },
-            params: {
-                location: `${this.state.userCoords.lat},${this.state.userCoords.lng}`,
-                radius: 50000,
-                keyword: this.state.search,
-                key: googleAPI
-            }
+            url:'http://localhost:8080/getlocation',  
         }).then((res)=>{
             let searchCoords = res.data.results[0].geometry.location 
             this.setState(
@@ -100,6 +102,8 @@ class MapContainer extends Component {
             )
         })
     }
+
+ 
 
     //Code for the experience creation modal 
     titleInput = (e) => {
@@ -128,7 +132,6 @@ class MapContainer extends Component {
                 console.log(res)
                 if (res.data.results[0] === undefined){
                     alert('location does not exist')
-                    //  this.setState({location: ''})
                      return 
                     }
                     
@@ -411,6 +414,8 @@ class MapContainer extends Component {
         )
     }
 }
+
+
 
 export default GoogleApiWrapper({
     apiKey: 'AIzaSyA9pQUy3AG6PM-Gi-Jyz9MUiFgFl-UQ3SA'
