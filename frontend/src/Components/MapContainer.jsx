@@ -7,9 +7,6 @@ import Search from './Search'
 import CreateExperience from './CreateExperience'
 
 const googleAPI = 'AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw'
-const yelpAPI = 'qHwBybthx8SOAu_231Jff9xKWrt9cq3p2lc1oytmPLmQSdyizg4mVm2wWVTgx9yjkvH-nJrNLdpnhoQRs0fhSWgZ8Ef1aQCAzPf15zPn6WC2nxLiDmpGiwOmGGm-WnYx'
-
-
 class MapContainer extends Component {
     constructor(props) {
         super(props)
@@ -38,9 +35,6 @@ class MapContainer extends Component {
     }
 
     componentDidMount() {
-        console.log(window)
-      
-        // console.log(window.google.maps.places.version)
         axios.get('http://localhost:8080/getcoordinates')
             .then((res) => {
                 this.setState({ markerCoordinates: res.data })
@@ -49,15 +43,7 @@ class MapContainer extends Component {
             .then((res) => {
                 this.setState({ experiences: res.data })
             })
-        axios.get('http://localhost:8080/getlocation')
-            .then((res) => {
-                console.log(res)
-            })
     }
-
-
-    
-
     componentWillReceiveProps(nextProps) {
         if (nextProps.coords !== null) {
             let newCoords = {
@@ -72,7 +58,6 @@ class MapContainer extends Component {
             )
         }
     }
-
     shouldComponentUpdate(nextProps, nextState) {
         return nextState.userCoords !== this.state.userCoords || nextProps.user !== null || nextState.markerCoordinates !== this.state.markerCoordinates
     }
@@ -84,25 +69,18 @@ class MapContainer extends Component {
             this.setState({ experiences: this.state.experiences })
         }
     }
-
     searchInput = (e) => {
-        console.log(e.target.value)
         this.setState({ search: e.target.value })
     }
   
     handleSearch = () => {
-        console.log('hello')
         axios({
             method: 'POST',
-            url:'http://localhost:8080/postsearch',
+            url:'http://localhost:8080/getlocation',
             data:{
                 keyword: this.state.search,
                 location: `${this.state.userCoords.lat}, ${this.state.userCoords.lng}`
             }
-        })
-        axios({
-            method: 'GET',
-            url:'http://localhost:8080/getlocation',  
         }).then((res)=>{
             let searchCoords = res.data.results[0].geometry.location 
             this.setState(
@@ -130,71 +108,71 @@ class MapContainer extends Component {
     maxInput = (e) => {
         this.setState({ max: e.target.value })
     }
+
+
     create = () => {
         let currentEmail = firebase.auth().currentUser.email
         let currentUser = firebase.auth().currentUser.displayName
         this.setState({ placeName: this.state.location, currentUser: currentUser })
+        console.log(this.state.placeName)
         axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.userCoords.lat},${this.state.userCoords.lng}&radius=50000&keyword=${this.state.location}&key=AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw`)
             .then((res) => {
                 console.log(res)
-                if (res.data.results[0] === undefined){
+                if (res.data.results[0] === undefined) {
                     alert('location does not exist')
-                     return 
-                    }
-                    
-                      else {
+                    return
+                }
+                else {
+                    let coords = res.data.results[0].geometry.location
+                    console.log(res.data.results[0])
+                    this.setState(
+                        {
+                            title: this.state.title,
+                            time: this.state.time,
+                            duration: this.state.duration,
+                            details: this.state.details,
+                            placeName: this.state.placeName,
+                            location: coords,
+                            markerCoordinates: this.state.markerCoordinates.concat(coords),
+                            participants: this.state.currentUser
+                        }, () => {
+                            let newExpObj = {
+                                title: this.state.title,
+                                time: JSON.stringify(this.state.time),
+                                duration: this.state.duration,
+                                details: this.state.details,
+                                location: JSON.stringify(this.state.location),
+                                placeName: this.state.placeName,
+                                max: this.state.max,
+                                participants: this.state.currentUser
+                            }
+                            this.setState({ experiences: this.state.experiences.concat(newExpObj) })
+                        }
+                    )
+                    axios.post('http://localhost:8080/addexperience', {
 
-                let coords = res.data.results[0].geometry.location
-                
-
-                this.setState(
-                    {
                         title: this.state.title,
                         time: this.state.time,
                         duration: this.state.duration,
                         details: this.state.details,
+                        location: this.state.location,
+                        email: currentEmail,
+                        max: this.state.max,
                         placeName: this.state.placeName,
-                        location: coords,
-                        markerCoordinates: this.state.markerCoordinates.concat(coords),
                         participants: this.state.currentUser
-                    }, () => {
-                        let newExpObj = {
-                            title: this.state.title,
-                            time: JSON.stringify(this.state.time),
-                            duration: this.state.duration,
-                            details: this.state.details,
-                            location: JSON.stringify(this.state.location),
-                            placeName: this.state.placeName,
-                            max: this.state.max,
-                            participants: this.state.currentUser
+                    })
+                    this.setState(
+                        {
+                            title: "",
+                            time: this.state.time,
+                            duration: "",
+                            details: "",
+                            location: "",
+                            max: ""
                         }
-                        this.setState({ experiences: this.state.experiences.concat(newExpObj) })
-                    }
-                )
-                axios.post('http://localhost:8080/addexperience', {
-
-                    title: this.state.title,
-                    time: this.state.time,
-                    duration: this.state.duration,
-                    details: this.state.details,
-                    location: this.state.location,
-                    email: currentEmail,
-                    max: this.state.max,
-                    placeName: this.state.placeName,
-                    participants: this.state.currentUser
-                })
-                this.setState(
-                    {
-                        title: "",
-                        time: this.state.time,
-                        duration: "",
-                        details: "",
-                        location: "",
-                        max: ""
-                    }
-                )
-            }
-        })
+                    )
+                }
+            })
     }
 
     // Experience Modal
@@ -327,8 +305,8 @@ class MapContainer extends Component {
         return (
             <div style={styles.searchArea}>
                 <Search searchInput={this.searchInput} handleSearch={this.handleSearch} search={this.state.search}/>
-                <CreateExperience title={this.state.title} titleInput={this.titleInput} onChange={this.onChange}
-                max={this.state.max} maxInput={this.maxInput} description={this.state.description} detailsInput={this.detailsInput}
+                <CreateExperience title={this.state.title} titleInput={this.titleInput} onChange={this.onChange} location={this.state.location}
+                locationInput={this.locationInput} max={this.state.max} maxInput={this.maxInput} description={this.state.description} detailsInput={this.detailsInput}
                 create={this.create}/>
                 {(this.state.loader === true) ?
                     <div className="Load" style={styles.dimmer} >

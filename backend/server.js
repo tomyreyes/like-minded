@@ -40,8 +40,6 @@ app.get('/getuser', (req, res) => {
 })
 
 
-
-
 app.post('/adduser', (req, res) => {
     let receivedEmail = req.body.email
     let arrayEmail
@@ -51,23 +49,20 @@ app.post('/adduser', (req, res) => {
         displayName: req.body.displayName
     }).save()
 })
-let location
-app.post('/postsearch', (req, res) => {
-    location = req.body
-    res.json(location)
-})
 
-app.get('/getlocation', (req, res) => {
+app.post('/getlocation', (req, res) => {
+    console.log(req.body)
+    const { keyword, location } = req.body
+
     Axios({
         method: 'GET',
         url: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
         params: {
         key: googleAPI,
-        location: '49.2193, -122.5984',
-        keyword: 'Thomas Haney Secondary School, BC',
+        location: location,
+        keyword: keyword,
         radius: 50000
         }
-
     }).then(success =>{
         console.log(success)
         res.send(success.data)
