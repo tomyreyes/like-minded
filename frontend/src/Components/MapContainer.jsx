@@ -54,8 +54,7 @@ class MapContainer extends Component {
                 {
                     userCoords: newCoords,
                     loader: false
-                }
-            )
+                })
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -108,7 +107,6 @@ class MapContainer extends Component {
     maxInput = (e) => {
         this.setState({ max: e.target.value })
     }
-
 
     create = () => {
         let currentEmail = firebase.auth().currentUser.email
@@ -163,12 +161,12 @@ class MapContainer extends Component {
                     })
                     this.setState(
                         {
-                            title: "",
+                            title: '',
                             time: this.state.time,
-                            duration: "",
-                            details: "",
-                            location: "",
-                            max: ""
+                            duration: '',
+                            details: '',
+                            location: '',
+                            max: ''
                         }
                     )
             })
@@ -190,7 +188,7 @@ class MapContainer extends Component {
                 console.log(error)
             })
     }
-
+    
     close = () => {
         this.setState({ display: false })
     }
@@ -256,10 +254,9 @@ class MapContainer extends Component {
         let Markers = []
         if (this.state.markerCoordinates !== '') {
             Markers = this.state.markerCoordinates.map((coord, i) => {
-                return (<Marker key={i} position={coord} onClick={this.showExperience} />)
+                return (<Marker key={i} position={coord} onClick={this.showExperience}/>)
             })
         }
-
         const styles = {
            
             modal2: {
@@ -296,7 +293,6 @@ class MapContainer extends Component {
                 textAlign: 'center',
                 position: 'fixed'
             }
-
         }
         const { userCoords } = this.state
 
@@ -369,5 +365,5 @@ class MapContainer extends Component {
 }
 
 export default GoogleApiWrapper({
-    apiKey: 'AIzaSyA9pQUy3AG6PM-Gi-Jyz9MUiFgFl-UQ3SA'
+    apiKey: googleAPI
 })(MapContainer)
