@@ -176,6 +176,7 @@ class MapContainer extends Component {
         let currentUser = firebase.auth().currentUser.displayName
         axios.get('http://localhost:8080/getexperiences')
             .then((res) => {
+                console.log(res)
 
                 let filter = res.data.filter((experience) => (experience.location === JSON.stringify(exp.position)) ? experience : '')
                 this.setState({ experience: filter, display: true, buttonLogic: filter })
@@ -188,7 +189,7 @@ class MapContainer extends Component {
                 console.log(error)
             })
     }
-    
+
     close = () => {
         this.setState({ display: false })
     }
@@ -203,7 +204,7 @@ class MapContainer extends Component {
                 let filter = listExperiences.filter((experience) => (experience.id === this.state.experience[0].id) ? experience : '')
                 axios.get('http://localhost:8080/getuser')
                     .then((res) => {
-
+                        console.log(res)
                         let userArr = res.data
                         let filter = listExperiences.filter((experience) => (experience.id === this.state.experience[0].id) ? experience : '')
 
@@ -260,38 +261,38 @@ class MapContainer extends Component {
         const styles = {
            
             modal2: {
-                marginTop: '100px',
-                padding: '10px',
-                marginLeft: '490px'
+                marginTop: "100px",
+                padding: "10px",
+                marginLeft: "490px"
             },
             closeButton: {
-                textAlign: 'right'
+                textAlign: "right"
             },
             header: {
-                textAlign: 'center'
+                textAlign: "center"
             },
             searchArea: {
-                background: '#1b1c1d',
-                textAlign: 'center',
-                marginTop: '-2px',
+                background: "#1b1c1d",
+                textAlign: "center",
+                marginTop: "-2px",
                 flex: 1
             },
             loader: {
-                top: '500px',
+                top: "500px",
                 color: "black",
 
             },
             dimmer: {
-                background: '#1b1c1d'
+                background: "#1b1c1d"
             },
             brand: {
                 top: -10,
-                textAlign: 'center',
-                color: 'white'
+                textAlign: "center",
+                color: "white"
             },
             divv: {
-                textAlign: 'center',
-                position: 'fixed'
+                textAlign: "center",
+                position: "fixed"
             }
         }
         const { userCoords } = this.state
@@ -301,7 +302,8 @@ class MapContainer extends Component {
                 <Search searchInput={this.searchInput} handleSearch={this.handleSearch} search={this.state.search}/>
                 <CreateExperience title={this.state.title} titleInput={this.titleInput} onChange={this.onChange} location={this.state.location}
                 locationInput={this.locationInput} max={this.state.max} maxInput={this.maxInput} description={this.state.description} detailsInput={this.detailsInput}
-                create={this.create}/>
+                create={this.create}
+                />
                 {(this.state.loader === true) ?
                     <div className="Load" style={styles.dimmer} >
                         <Segment style={styles.dimmer}>
@@ -334,7 +336,7 @@ class MapContainer extends Component {
                         </Map>
                     </div>
                 }
-                {!(this.state.experience === '') ?
+                {!(this.state.experience === "") ?
                     <Modal style={styles.modal2} open={this.state.display} closeOnDimmerClick>
                         <div style={styles.closeButton}>
                             <Button onClick={this.close} color="red">Close</Button>
