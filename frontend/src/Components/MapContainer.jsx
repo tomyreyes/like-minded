@@ -114,17 +114,17 @@ class MapContainer extends Component {
         let currentEmail = firebase.auth().currentUser.email
         let currentUser = firebase.auth().currentUser.displayName
         this.setState({ placeName: this.state.location, currentUser: currentUser })
-        console.log(this.state.placeName)
-        axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${this.state.userCoords.lat},${this.state.userCoords.lng}&radius=50000&keyword=${this.state.location}&key=AIzaSyDK5cgjI7DpnkOJrbLuXUcx6FA2KPl72Jw`)
-            .then((res) => {
-                console.log(res)
-                if (res.data.results[0] === undefined) {
-                    alert('location does not exist')
-                    return
-                }
-                else {
-                    let coords = res.data.results[0].geometry.location
-                    console.log(res.data.results[0])
+        axios({
+            method: 'POST',
+            url: 'http://localhost:8080/getlocation',
+            data: {
+                keyword: this.state.location,
+                location: `${this.state.userCoords.lat}, ${this.state.userCoords.lng}`
+            }
+        }).then((res) => {
+                let expCoords
+                res.data.results[0] === undefined ?  alert('location does not exist') :
+                    expCoords = res.data.results[0].geometry.location
                     this.setState(
                         {
                             title: this.state.title,
@@ -132,8 +132,8 @@ class MapContainer extends Component {
                             duration: this.state.duration,
                             details: this.state.details,
                             placeName: this.state.placeName,
-                            location: coords,
-                            markerCoordinates: this.state.markerCoordinates.concat(coords),
+                            location: expCoords,
+                            markerCoordinates: this.state.markerCoordinates.concat(expCoords),
                             participants: this.state.currentUser
                         }, () => {
                             let newExpObj = {
@@ -171,10 +171,8 @@ class MapContainer extends Component {
                             max: ""
                         }
                     )
-                }
             })
     }
-
     // Experience Modal
     showExperience = (exp) => {
         let currentUser = firebase.auth().currentUser.displayName
@@ -369,8 +367,6 @@ class MapContainer extends Component {
         )
     }
 }
-
-
 
 export default GoogleApiWrapper({
     apiKey: 'AIzaSyA9pQUy3AG6PM-Gi-Jyz9MUiFgFl-UQ3SA'
