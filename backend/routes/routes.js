@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const User = require('../models/Users')
 const Experience = require('../models/Experiences')
-
 const Axios = require('axios')
 const Experiences = require('../controllers/Experience')
 const Users = require('../controllers/User')
@@ -22,8 +21,6 @@ router.get('/getexperiences', (req, res) => {
         res.send(experiencesArray)
     })
 })
-
-
 
 router.get('/getuser', (req, res) => {
     Users.getAllUsers((user) => {
@@ -62,8 +59,7 @@ router.post('/getlocation', (req, res) => {
         res.send(error)
     })
 })
-router.post('/addexperience', (req, res) => {
-
+router.post('/addexperience', (req, res) => { //this needs to be refactored with created controllers 
     let currentEmail = req.body.email
     let id
     User.where({ email: currentEmail })
@@ -90,7 +86,7 @@ router.post('/addexperience', (req, res) => {
         })
 })
 
-router.put('/updateparticipants', (req, res) => {
+router.put('/updateparticipants', (req, res) => { //this needs to be refactored with created controllers 
     let currentId = req.body.id
     let newParticipants = req.body.participants
     new Experience({ id: currentId })
