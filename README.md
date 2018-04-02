@@ -31,12 +31,11 @@ Like-Minded is still in its beginning phase in its development. I have several p
 of channels where users participating in the same experiences can talk to eachother,as well as creating a filter and different coloured markers that can help users distinguish between different types of experiences. Along with this, I plan to 
 either venture off into using Redux or React Native, as well as turn this app into a progressive web application. 
 
-## Upcoming additions
-- Clean up design - fix bugs
-- Refactor components 
+## Future additions 
 - User Data from Facebook Login
 - Different colour markers to be able to distinguish between different experience categories
 - Category Filter
+- Experience expiry - will delete on their own 
 
 ## This application was built using:
 * [React](https://reactjs.org/) 
