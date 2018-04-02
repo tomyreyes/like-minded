@@ -36,6 +36,7 @@ either venture off into using Redux or React Native, as well as turn this app in
 - Different colour markers to be able to distinguish between different experience categories
 - Category Filter
 - Experience expiry - will delete on their own 
+- Fix controllers for creating posts in db
 
 ## This application was built using:
 * [React](https://reactjs.org/) 
