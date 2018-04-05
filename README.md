@@ -37,6 +37,7 @@ either venture off into using Redux or React Native, as well as turn this app in
 - Category Filter
 - Experience expiry - will delete on their own 
 - Fix controllers for creating posts in db
+- Establish Unit tests for functions
 
 ## This application was built using:
 * [React](https://reactjs.org/) 
