@@ -38,7 +38,7 @@ either venture off into using Redux or React Native, as well as turn this app in
 - Experience expiry - will delete on their own 
 - Fix controllers for creating posts in db
 - Establish Unit tests for functions
-
+- Google Auto-Complete
 ## This application was built using:
 * [React](https://reactjs.org/) 
 * node.js
