@@ -112,6 +112,16 @@ class MapContainer extends Component {
     let currentEmail = firebase.auth().currentUser.email
     let currentUser = firebase.auth().currentUser.displayName
     this.setState({ placeName: this.state.location, currentUser: currentUser })
+    axios
+      .get('http://localhost:8080/getexperiences')
+      .then(res => {
+        let filter = res.data.filter(
+          experience =>
+            experience.placeName === this.state.placeName
+              ? alert('Place already in use')
+              : ''
+        )
+
     axios({
       method: 'POST',
       url: 'http://localhost:8080/getlocation',
@@ -171,15 +181,16 @@ class MapContainer extends Component {
         max: ''
       })
     })
-  }
+  })
+}
+
   // Experience Modal
   showExperience = exp => {
     let currentUser = firebase.auth().currentUser.displayName
     axios
       .get('http://localhost:8080/getexperiences')
       .then(res => {
-        console.log(res)
-
+        console.log(res.data)
         let filter = res.data.filter(
           experience =>
             experience.location === JSON.stringify(exp.position)
