@@ -59,31 +59,24 @@ router.post('/getlocation', (req, res) => {
         res.send(error)
     })
 })
-router.post('/addexperience', (req, res) => { //this needs to be refactored with created controllers 
-    let currentEmail = req.body.email
-    let id
-    User.where({ email: currentEmail })
-        .fetch()
-        .then(user => {
-            id = user.attributes.id
-            let newExperience = new Experience({
-                title: req.body.title,
-                time: req.body.time,
-                duration: req.body.duration,
-                location: req.body.location,
-                details: req.body.details,
-                User_id: id,
-                placeName: req.body.placeName,
-                max: req.body.max,
-                participants: req.body.participants
-
-            })
-            newExperience.save()
-                .then(experience => {
-                    console.log(experience)
-                })
-            res.json({ success: true })
-        })
+router.post('/addexperience', (req, res) => {
+    let {title, time, duration, location, details, placeName, max, participants, email} = req.body
+    Experiences.newExperiences(
+      {
+        title,
+        time,
+        duration,
+        location,
+        details,
+        placeName,
+        max,
+        participants,
+        email
+      },
+      () => {
+        res.json({ success: true })
+      }
+    )
 })
 
 router.put('/updateparticipants', (req, res) => { //this needs to be refactored with created controllers 
