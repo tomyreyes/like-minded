@@ -8,9 +8,6 @@ import { Redirect } from 'react-router'
 import firebase from 'firebase'
 import axios from 'axios'
 
-
-
-
 class App extends Component {
   constructor() {
     super()
@@ -94,3 +91,5 @@ export default geolocated(
     geolocationProvider: navigator.geolocation
 }
 )(App);
+
+

@@ -5,7 +5,6 @@ import TimePicker from 'react-time-picker'
 class CreateExperience extends Component {
     
     render(){
-        console.log(this.props)
         const styles = {
             modal: {
                 marginTop: '100px',
